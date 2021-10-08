@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - localdb:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - TZ=US/Eastern
+      - PGTZ=UTC
+      - POSTGRES_DB=matk
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  matk:
+    build:
+      context: ${MATK_PATH}
+      dockerfile: ${MATK_PATH}/.docker/Dockerfile
+    volumes:
+      - ${MATK_PATH}:/matk
+      - ${MATK_PATH}/.settings/ipython_config.py:/root/.ipython/profile_default/ipython_config.py:ro
+      - ${MATK_PATH}/.settings/jupyter_notebook_config.py:/root/.jupyter/jupyter_notebook_config.py:ro
+    ports:
+      - 8888:8888
+    working_dir: /matk
+    environment:
+      - OMPI_ALLOW_RUN_AS_ROOT=1
+    stdin_open: true
+    tty: true
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    sysctls:
+        - net.ipv4.tcp_keepalive_time=200
+        - net.ipv4.tcp_keepalive_intvl=200
+        - net.ipv4.tcp_keepalive_probes=5
+    command: >
+      bash -c "pip install -e .
+      && pip install -U -r requirements.txt
+      && jupyter notebook"
+      
+
+volumes:
+  localdb:
+    driver: local

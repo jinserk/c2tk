@@ -11,6 +11,7 @@ def main(smiles: str) -> None:
 
     atoms = pre_optimize(atoms)
 
+    """
     calc = QChem(label='qchem',
                  method='B3LYP',
                  basis='6-31+G*',
@@ -20,7 +21,6 @@ def main(smiles: str) -> None:
     opt = LBFGS(atoms)
     opt.run(fmax=0.05)
 
-    """
     calc = NWChem(label='nwchem',
                   dft=dict(
                       maxiter=2000,
@@ -32,8 +32,9 @@ def main(smiles: str) -> None:
 
     opt = LBFGS(atoms)
     opt.run(fmax=0.05)
+    """
 
-    obj = NWChemWrapper(nproc=4, mem=8000)
+    obj = NWChemWrapper(nproc=1, mem=8000)
     calc_params = {
         'basis': '6-31+G*',
         'func': 'B3LYP',
@@ -41,7 +42,6 @@ def main(smiles: str) -> None:
     }
     e, f, p = obj.geom_opt(atoms, label="test", calc_params=calc_params)
     print(atoms.positions)
-    """
 
 
 if __name__ == "__main__":
