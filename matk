@@ -13,13 +13,14 @@ fn_help()
     echo "matk command script"
     echo
     echo "Usage: "
-    echo "  matk up         run the kyumatic env in background"
-    echo "  matk down       teardown all kyumatic env"
-    echo "  matk <cmd>      interactive command execution on container"
+    echo "  matk up             run the kyumatic env in background"
+    echo "  matk down           teardown all kyumatic env"
+    echo "  matk [help|-h]      show this help"
+    echo "  matk <cmd> <args>   interactive command execution on container"
     echo
     echo "  examples:"
-    echo "    math up"
-    echo "    math python main.py"
+    echo "    ./matk up"
+    echo "    ./matk python main.py"
     echo
 }
 
@@ -29,7 +30,8 @@ cmd_prefix="${DOCKER_COMPOSE_CMD} -f ${DOCKER_PATH}/docker-compose.yml -p matk"
 
 case $1 in
     "up")
-        ${cmd_prefix} up -d --remove-orphans
+        ${cmd_prefix} up -d --remove-orphans --build
+        #${cmd_prefix} up --build
         ;;
     "down")
         ${cmd_prefix} down --remove-orphans
