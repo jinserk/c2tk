@@ -7,7 +7,7 @@ from rdkit.Chem.AllChem import (
     UFFGetMoleculeForceField,
 )
 
-from .molecule import Atoms
+from .atoms import Atoms
 from .nwchem import NWChemWrapper
 
 

@@ -1,3 +1,7 @@
+# The code in this file originated from project ESTEEM
+# https://bitbucket.org/ndmhine/esteem/
+# and its author Nicholas Hine
+
 import os
 from typing import Optional
 
@@ -11,7 +15,7 @@ from ase.calculators.calculator import PropertyNotImplementedError
 from ase.optimize import LBFGS
 from ase.units import Hartree
 
-from .molecule import Atoms
+from .atoms import Atoms
 
 
 def pre_optimize(atoms: Atoms, fmax: float = 0.05):

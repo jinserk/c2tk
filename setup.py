@@ -7,5 +7,6 @@ setuptools.setup(
         'matplotlib',
         'ase',
         'rdkit-pypi',
+        'networkx',
     ],
 )

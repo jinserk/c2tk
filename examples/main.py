@@ -8,6 +8,7 @@ from matk.nwchem import NWChemWrapper, pre_optimize
 def main(smiles: str) -> None:
     atoms = get_conformer(smiles)
     atoms.name = "test"
+    print(atoms.to_rdmol())
 
     atoms = pre_optimize(atoms)
 
