@@ -1,4 +1,9 @@
 import random
+from typing import Optional
+
+import ase
+from ase.calculators.emt import EMT
+from ase.optimize import LBFGS
 
 from rdkit import Chem
 from rdkit.Chem.AllChem import (
@@ -7,11 +12,9 @@ from rdkit.Chem.AllChem import (
     UFFGetMoleculeForceField,
 )
 
-from .atoms import Atoms
-from .nwchem import NWChemWrapper
 
-
-def make_atoms(mol, attempts=50):
+def guess_conformer(mol: Chem.rdchem.Mol,
+                     attempts: int = 50) -> Chem.rdchem.Conformer:
     max_attempts = attempts * 25
     EmbedMultipleConfs(mol,
                        numConfs=attempts,
@@ -38,22 +41,33 @@ def make_atoms(mol, attempts=50):
 
     min_id = sorted(conf_energies, key=lambda x: x[1])[0][0]
     conf = mol.GetConformer(id=min_id)
-
-    aa = []
-    pp = []
-    atoms = mol.GetAtoms()
-    for atom_num in range(0, conf.GetNumAtoms()):
-        pos = conf.GetAtomPosition(atom_num)
-        a = atoms[atom_num].GetSymbol()
-        aa.append(a)
-        pp.append((pos.x, pos.y, pos.z))
-
-    return Atoms(aa, positions=pp)
+    return conf
 
 
-def get_conformer(smiles: str) -> Atoms:
+def make_atoms(mol: Chem.rdchem.Mol) -> ase.Atoms:
+    conf = guess_conformer(mol)
+    mol_atoms = mol.GetAtoms()
+
+    atoms = ase.Atoms()
+    for an in range(0, conf.GetNumAtoms()):
+        a = mol_atoms[an].GetSymbol()
+        p = conf.GetAtomPosition(an)
+        atoms.append(ase.Atom(a, [p.x, p.y, p.z]))
+    return atoms
+
+
+def get_atoms(smiles: str) -> ase.Atoms:
     mol = Chem.MolFromSmiles(smiles)
     mol = Chem.AddHs(mol)
-
     atoms = make_atoms(mol)
     return atoms
+
+
+def pre_optimize(atoms: ase.Atoms,
+                 fmax: float = 0.05) -> None:
+    _calc = atoms.calc
+    atoms.calc = EMT()
+    opt = LBFGS(atoms, logfile=f"temp.pre")
+    opt.run(fmax=fmax)
+    atoms.calc = _calc
+

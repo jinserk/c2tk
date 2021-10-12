@@ -39,7 +39,6 @@ services:
       bash -c "pip install -e .
       && pip install -U -r requirements.txt
       && jupyter notebook"
-      
 
 volumes:
   localdb:

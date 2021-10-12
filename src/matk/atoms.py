@@ -1,15 +1,30 @@
 import io
+import random
 
 import ase
 from ase.io import extxyz
-from ase.calculators.emt import EMT
 
 from rdkit import Chem
+from rdkit.Chem.AllChem import (
+    EmbedMultipleConfs, GetBestRMS,
+    MMFFGetMoleculeForceField, MMFFGetMoleculeProperties,
+    UFFGetMoleculeForceField,
+)
 
+from .conformer import get_atoms, pre_optimize
 from .xyz2mol import xyz2mol
 
+
 class Atoms(ase.Atoms):
-    name = "anonymous"
+
+    def add_mol(self, smiles: str,
+                center: list[float] = None,
+                rotate: list[float] = None,
+                pre_opt: bool = False):
+        atoms = get_atoms(smiles)
+        if pre_opt:
+            pre_optimize(atoms)
+        self.extend(atoms)
 
     def to_rdmol(self):
         atoms = self.get_atomic_numbers().tolist()
@@ -26,3 +41,5 @@ class Atoms(ase.Atoms):
         with io.StringIO() as f:
             extxyz.write_extxyz(f, [self])
             return f.getvalue()
+
+

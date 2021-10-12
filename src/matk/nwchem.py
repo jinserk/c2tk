@@ -9,26 +9,11 @@ import numpy as np
 
 import ase
 from ase.io import xyz
-from ase.calculators.emt import EMT
 from ase.calculators.nwchem import NWChem
 from ase.calculators.calculator import PropertyNotImplementedError
-from ase.optimize import LBFGS
 from ase.units import Hartree
 
 from .atoms import Atoms
-
-
-def pre_optimize(atoms: Atoms, fmax: float = 0.05):
-    #with open("xyz.in", 'w') as f:
-    #    xyz.write_xyz(f, [molecule])
-    _calc = atoms.calc
-    atoms.calc = EMT()
-    opt = LBFGS(atoms, logfile=f"{atoms.name}.pre")
-    opt.run(fmax=fmax)
-    atoms.calc = _calc
-    #with open("xyz.out", 'w') as f:
-    #    xyz.write_xyz(f, [molecule])
-    return atoms
 
 
 class NWChemWrapper:
