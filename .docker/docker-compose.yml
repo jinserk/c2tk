@@ -5,8 +5,8 @@ services:
     image: postgres
     volumes:
       - localdb:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+    expose:
+      - 5432
     environment:
       - TZ=US/Eastern
       - PGTZ=UTC
@@ -23,7 +23,7 @@ services:
       - ${MATK_PATH}/.settings/ipython_config.py:/root/.ipython/profile_default/ipython_config.py:ro
       - ${MATK_PATH}/.settings/jupyter_notebook_config.py:/root/.jupyter/jupyter_notebook_config.py:ro
     ports:
-      - 8888:8888
+      - 8889:8889
     working_dir: /matk
     stdin_open: true
     tty: true
