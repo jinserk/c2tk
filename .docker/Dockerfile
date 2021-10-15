@@ -57,6 +57,6 @@ RUN . /etc/profile \
 #ENV PATH="/opt/orca501:${PATH}"
 #ENV LD_LIBRARY_PATH="/opt/orca501:${LD_LIBRARY_PATH}"
 
-ENV ASE_NWCHEM_COMMAND="source /etc/profile && module load mpi/mpich-${ARCH} && mpirun -np ${NPROC} nwchem_mpich PREFIX.inp > PREFIX.out"
+ENV ASE_NWCHEM_COMMAND="source /etc/profile && module load mpi/mpich-${ARCH} && mpirun -np ${NPROC} nwchem_mpich PREFIX.nwi > PREFIX.nwo"
 #ENV ASE_ORCA_COMMAND="/opt/orca501/orca PREFIX.inp >> PREFIX.out 2> PREFIX.err"
 
