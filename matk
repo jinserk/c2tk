@@ -28,6 +28,7 @@ fn_help()
 [[ $# -lt 1 ]] && fn_help && exit 1
 
 cmd_prefix="${DOCKER_COMPOSE_CMD} -f ${DOCKER_PATH}/docker-compose.yml -p matk"
+cmd_str=". /etc/profile && module load mpi/mpich-x86_64 && ${@:1}"
 
 case $1 in
     "up")
@@ -48,6 +49,6 @@ case $1 in
         ;;
     *)
         ${cmd_prefix} up -d --remove-orphans
-        ${cmd_prefix} exec matk ${@:1}
+        ${cmd_prefix} exec matk sh -c "${cmd_str}"
         ;;
 esac

@@ -1,18 +1,6 @@
 FROM registry.fedoraproject.org/fedora-minimal:latest
 ENV PYTHONUNBUFFERED=1
 
-ARG ARCH=x86_64
-ARG NPROC=1
-ARG VDWXC_VER=0.4.0
-ARG ELPA_VER=2021.05.002
-
-ENV OMPI_ALLOW_RUN_AS_ROOT=1
-ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
-ENV C_INCLUDE_PATH=${C_INCLUDE_PATH}:/usr/include/elpa_openmp-${ELPA_VER}
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
-ENV RUNPATH=${RUNPATH}:/usr/lib64/mpich/lib:/usr/local/lib
-ENV ENV="/etc/profile /bin/sh"
-
 RUN microdnf update -y \
     && microdnf install -y \
     wget bison byacc diffstat flex \
@@ -28,6 +16,14 @@ RUN microdnf update -y \
     elpa-mpich-devel blacs-mpich-devel hdf5-mpich-devel \
     && microdnf clean all
     
+ARG ARCH=x86_64
+ARG VDWXC_VER=0.4.0
+ARG ELPA_VER=2021.05.002
+
+ENV C_INCLUDE_PATH=${C_INCLUDE_PATH}:/usr/include/elpa_openmp-${ELPA_VER}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
+ENV RUNPATH=${RUNPATH}:/usr/lib64/mpich/lib:/usr/local/lib
+   
 RUN echo -e ". /etc/profile\nmodule load mpi/mpich-${ARCH}" > /root/.bash_profile
 RUN cp /root/.bash_profile /root/.zprofile
 RUN . /etc/profile \
@@ -57,6 +53,10 @@ RUN . /etc/profile \
 #ENV PATH="/opt/orca501:${PATH}"
 #ENV LD_LIBRARY_PATH="/opt/orca501:${LD_LIBRARY_PATH}"
 
-ENV ASE_NWCHEM_COMMAND="source /etc/profile && module load mpi/mpich-${ARCH} && mpirun -np ${NPROC} nwchem_mpich PREFIX.nwi > PREFIX.nwo"
+ARG NPROC=1
+ENV OMPI_ALLOW_RUN_AS_ROOT=1
+ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+
+ENV ASE_NWCHEM_COMMAND="mpirun -np ${NPROC} nwchem_mpich PREFIX.nwi > PREFIX.nwo"
 #ENV ASE_ORCA_COMMAND="/opt/orca501/orca PREFIX.inp >> PREFIX.out 2> PREFIX.err"
 
