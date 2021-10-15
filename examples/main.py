@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from ase import Atoms
 from ase.calculators.qchem import QChem
 from ase.calculators.nwchem import NWChem
@@ -89,8 +91,10 @@ def main(smiles: str) -> None:
     atoms = get_atoms(smiles)
 
     atoms.center(vacuum=5.0)
-    #atoms = pre_optimize(atoms)
-    test_orca(atoms)
+    atoms = pre_optimize(atoms)
+    #test_orca(atoms)
+    #test_gpaw(atoms)
+    test_nwchem(atoms)
 
 
 if __name__ == "__main__":

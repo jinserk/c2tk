@@ -1,6 +1,7 @@
 #!/bin/bash
 export MATK_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 export DOCKER_PATH="${MATK_PATH}/.docker"
+export NPROC="$( nproc )"
 
 if command -v docker-compose &> /dev/null; then
     DOCKER_COMPOSE_CMD="docker-compose"     # v1
@@ -35,6 +36,9 @@ case $1 in
         ;;
     "down")
         ${cmd_prefix} down --remove-orphans
+        ;;
+    "build")
+        ${cmd_prefix} build --progress plain matk
         ;;
     "help")
         fn_help

@@ -14,7 +14,7 @@ from rdkit.Chem.AllChem import (
 
 
 def guess_conformer(mol: Chem.rdchem.Mol,
-                     attempts: int = 50) -> Chem.rdchem.Conformer:
+                    attempts: int = 50) -> Chem.rdchem.Conformer:
     max_attempts = attempts * 25
     EmbedMultipleConfs(mol,
                        numConfs=attempts,
@@ -70,4 +70,5 @@ def pre_optimize(atoms: ase.Atoms,
     opt = LBFGS(atoms, logfile=f"temp.pre")
     opt.run(fmax=fmax)
     atoms.calc = _calc
+    return atoms
 

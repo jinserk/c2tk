@@ -18,6 +18,8 @@ services:
     build:
       context: ${MATK_PATH}
       dockerfile: ${MATK_PATH}/.docker/Dockerfile
+      args:
+        - NPROC=${NPROC}
     volumes:
       - ${MATK_PATH}:/matk
       - ${MATK_PATH}/.settings/ipython_config.py:/root/.ipython/profile_default/ipython_config.py:ro
