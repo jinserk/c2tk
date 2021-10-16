@@ -14,10 +14,12 @@ fn_help()
     echo "matk command script"
     echo
     echo "Usage: "
-    echo "  matk up             run the kyumatic env in background"
-    echo "  matk down           teardown all kyumatic env"
-    echo "  matk [help|-h]      show this help"
-    echo "  matk <cmd> <args>   interactive command execution on container"
+    echo "  matk up                 run the kyumatic env in background"
+    echo "  matk down               teardown all kyumatic env"
+    echo "  matk build              build docker-compose image"
+    echo "  matk bash               get the interactive bash shell"
+    echo "  matk <cmd> <args>       execute cmd with args on container"
+    echo "  matk [help|-h|--help]   show this help"
     echo
     echo "  examples:"
     echo "    ./matk up"
@@ -28,12 +30,11 @@ fn_help()
 [[ $# -lt 1 ]] && fn_help && exit 1
 
 cmd_prefix="${DOCKER_COMPOSE_CMD} -f ${DOCKER_PATH}/docker-compose.yml -p matk"
-cmd_str=". /etc/profile && module load mpi/openmpi-x86_64 && ${@:1}"
 
 case $1 in
     "up")
-        ${cmd_prefix} up -d --remove-orphans --build
-        #${cmd_prefix} up --build
+        ${cmd_prefix} up -d --remove-orphans
+        #${cmd_prefix} up
         ;;
     "down")
         ${cmd_prefix} down --remove-orphans
@@ -41,14 +42,21 @@ case $1 in
     "build")
         ${cmd_prefix} build --progress plain matk
         ;;
+    "bash")
+        ${cmd_prefix} up -d --remove-orphans
+        ${cmd_prefix} exec matk /bin/bash --login
+        ;;
     "help")
         fn_help
         ;;
     "-h")
         fn_help
         ;;
+    "--help")
+        fn_help
+        ;;
     *)
-        ${cmd_prefix} up -d --remove-orphans --build
-        ${cmd_prefix} exec matk sh -c "${cmd_str}"
+        ${cmd_prefix} up -d --remove-orphans
+        ${cmd_prefix} exec matk bash --login -c "${@:1}"
         ;;
 esac
