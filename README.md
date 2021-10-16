@@ -21,8 +21,11 @@ Material Simulation Toolkit
 ### download orca 5.0.1
 register [here](https://orcaforum.kofo.mpg.de/index.php) and go downloads.\
 click `ORCA 5.0.1` post and choose `ORCA 5.0.1, Linux, x86-64, shared-version, .tar.xz Archive`.\
-make a folder named `.downloads/` under the `matk/`
-put your downloaded xz file to `matk/.downloads/
+```
+cd matk
+mkdir .downloads
+cp <your-download-path>/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz .downloads
+```
 
 ### build image
 ```
