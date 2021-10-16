@@ -60,3 +60,8 @@ or run your python scripts
 ```
 ./matk python examples/main.py
 ```
+
+### Docker container down
+```
+./matk down
+```
