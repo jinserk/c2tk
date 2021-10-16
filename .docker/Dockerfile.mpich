@@ -8,12 +8,12 @@ RUN microdnf update -y \
     gettext git indent intltool libtool patch patchutils \
     redhat-rpm-config rpm-build which \
     environment-modules \
-    openmpi \
-    nwchem nwchem-openmpi \
+    mpich \
+    nwchem nwchem-mpich \
     python3-devel \
     openblas-devel openblas-openmp openblas-threads \
-    libxc-devel fftw-devel fftw-openmpi-devel libomp-devel \
-    elpa-openmpi-devel blacs-openmpi-devel hdf5-openmpi-devel \
+    libxc-devel fftw-devel fftw-mpich-devel libomp-devel \
+    elpa-mpich-devel blacs-mpich-devel hdf5-mpich-devel \
     && microdnf clean all
     
 ARG ARCH=x86_64
@@ -22,17 +22,17 @@ ARG ELPA_VER=2021.05.002
 
 ENV C_INCLUDE_PATH=${C_INCLUDE_PATH}:/usr/include/elpa_openmp-${ELPA_VER}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
-ENV RUNPATH=${RUNPATH}:/usr/lib64/openmpi/lib:/usr/local/lib
+ENV RUNPATH=${RUNPATH}:/usr/lib64/mpich/lib:/usr/local/lib
    
-RUN echo -e ". /etc/profile\nmodule load mpi/openmpi-${ARCH}" > /root/.bash_profile
+RUN echo -e ". /etc/profile\nmodule load mpi/mpich-${ARCH}" > /root/.bash_profile
 RUN cp /root/.bash_profile /root/.zprofile
 RUN . /etc/profile \
-    && module load mpi/openmpi-${ARCH} \
+    && module load mpi/mpich-${ARCH} \
     && pip3 install -U --no-cache-dir pip setuptools wheel pyyaml pytest numpy scipy ipython jupyter
     
 WORKDIR /root
 RUN . /etc/profile \
-    && module load mpi/openmpi-${ARCH} \
+    && module load mpi/mpich-${ARCH} \
     && wget https://launchpad.net/libvdwxc/stable/${VDWXC_VER}/+download/libvdwxc-${VDWXC_VER}.tar.gz \
     && tar -xvf libvdwxc-${VDWXC_VER}.tar.gz \
     && cd libvdwxc-${VDWXC_VER}/ \
@@ -42,9 +42,9 @@ RUN . /etc/profile \
     && rm -rf libvdwxc-${VDWXC_VER}*
     
 WORKDIR /
-COPY .settings/gpaw-siteconfig.py /root/.gpaw/siteconfig.py
+COPY ./.settings/gpaw-siteconfig.py /root/.gpaw/siteconfig.py
 RUN . /etc/profile \
-    && module load mpi/openmpi-${ARCH} \
+    && module load mpi/mpich-${ARCH} \
     && pip3 install -U --no-cache-dir matplotlib ase rdkit-pypi gpaw networkx \
     && gpaw install-data --register /root/.gpaw
     
@@ -56,8 +56,7 @@ ENV LD_LIBRARY_PATH="/opt/orca501:${LD_LIBRARY_PATH}"
 ARG NPROC=1
 ENV OMPI_ALLOW_RUN_AS_ROOT=1
 ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
-COPY .settings/mca-params.conf /root/.openmpi/mca-params.conf
 
-ENV ASE_NWCHEM_COMMAND="mpirun -np ${NPROC} nwchem_openmpi PREFIX.nwi >> PREFIX.nwo 2> PREFIX.err"
+ENV ASE_NWCHEM_COMMAND="mpirun -np ${NPROC} nwchem_mpich PREFIX.nwi > PREFIX.nwo"
 ENV ASE_ORCA_COMMAND="/opt/orca501/orca PREFIX.inp >> PREFIX.out 2> PREFIX.err"
 

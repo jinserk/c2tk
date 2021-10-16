@@ -1,0 +1,58 @@
+FROM python:3.9-slim AS back
+ENV DEBIAN_FRONTEND noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV OMPI_ALLOW_RUN_AS_ROOT=1
+ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+
+RUN apt-get update -y && apt-get -y install apt-utils && apt-get -y dist-upgrade
+RUN apt-get install -y --no-install-recommends \
+    wget build-essential gawk libtool gcc gfortran \
+    mpi-default-bin mpi-default-dev \
+    libscalapack-mpi-dev libomp-dev \
+    libopenblas-dev libxc-dev libfftw3-dev libfftw3-mpi-dev \
+    openbabel nwchem \
+    && apt-get -y autoclean \
+    && apt-get -y autoremove --purge \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install -U --no-cache-dir pip setuptools wheel pyyaml numpy scipy ipython jupyter mpi4py cython
+
+ARG LIBVDWXC_VER=0.4.0
+
+WORKDIR /root
+RUN wget https://launchpad.net/libvdwxc/stable/${LIBVDWXC_VER}/+download/libvdwxc-${LIBVDWXC_VER}.tar.gz \
+    && tar -xvf libvdwxc-${LIBVDWXC_VER}.tar.gz \
+    && cd libvdwxc-${LIBVDWXC_VER}/ \
+    && ./configure CFLAGS="-fPIC" FCFLAGS="-fPIC" --with-mpi --prefix=/usr/local \
+    && make -j 2 && make install \
+    && cd .. \
+    && rm -rf libvdwxc-${LIBVDWXC_VER}*
+    
+ARG LIBELPA_VER=2021.05.001
+ENV C_INCLUDE_PATH=${C_INCLUDE_PATH}:/usr/local/include/elpa-${LIBELPA_VER}
+
+RUN wget https://gitlab.mpcdf.mpg.de/elpa/elpa/-/archive/new_release_${LIBELPA_VER}/elpa-new_release_${LIBELPA_VER}.tar.gz \
+    && tar -xvf elpa-new_release_${LIBELPA_VER}.tar.gz \
+    && cd elpa-new_release_${LIBELPA_VER}/ \
+    && ./autogen.sh \
+    && ./configure CC="mpicc" FC="mpif90" AWK="gawk" \
+        FCFLAGS="-O2 -mmmx -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -maes -mavx -mfma -mavx2" \
+        CFLAGS="-O2 -mmmx -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -maes -mavx -mfma -mavx2" \
+        --enable-openmp --with-mpi=yes --disable-avx512 --prefix=/usr/local \
+    && make -j 2 && make install \
+    && cd .. \
+    && rm -rf elpa-new_release_${LIBELPA_VER}*
+    
+#WORKDIR /
+#COPY ./.settings/gpaw-siteconfig.py /root/.gpaw/siteconfig.py
+#RUN pip3 install -U --no-cache-dir gpaw
+#RUN gpaw install-data --register /root/.gpaw
+
+#ADD ./.downloads/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz /opt
+#RUN mv /opt/orca_5_0_1_linux_x86-64_shared_openmpi411 /opt/orca501
+#ENV PATH="/opt/orca501:${PATH}"
+#ENV LD_LIBRARY_PATH="/opt/orca501:${LD_LIBRARY_PATH}"
+
+#ENV ASE_NWCHEM_COMMAND="mpirun --use-hwthread-cpus nwchem PREFIX.inp >> PREFIX.out 2> PREFIX.err"
+#ENV ASE_ORCA_COMMAND="/opt/orca501/orca PREFIX.inp >> PREFIX.out 2> PREFIX.err"
+

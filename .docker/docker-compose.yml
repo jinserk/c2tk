@@ -24,6 +24,7 @@ services:
       - ${MATK_PATH}:/matk
       - ${MATK_PATH}/.settings/ipython_config.py:/root/.ipython/profile_default/ipython_config.py:ro
       - ${MATK_PATH}/.settings/jupyter_notebook_config.py:/root/.jupyter/jupyter_notebook_config.py:ro
+    shm_size: '1gb'
     ports:
       - 8889:8889
     working_dir: /matk

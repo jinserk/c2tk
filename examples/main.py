@@ -58,33 +58,30 @@ def test_gpaw(atoms: Atoms) -> None:
     )
     atoms.calc = calc
     e1 = atoms.get_potential_energy()
-
+    print(f'hydrogen molecule energy: {e1:5.2f} eV')
+    """
     relax = QuasiNewton(atoms, logfile='qn.log')
     relax.run(fmax=0.05)
     e2 = atoms.get_potential_energy()
-
-    print(f'hydrogen molecule energy: {e1:5.2f} eV')
     print(f'hydrogen molecule energy: {e2:5.2f} eV')
+    """
     calc.write('temp.gpw')
 
 
 def test_orca(atoms: Atoms) -> None:
     calc = ORCA(
         label='temp',
-        maxiter=2000, charge=0, mult=1, task='gradient',
-        orcasimpleinput='B3LYP def2-SVP',
-        orcablocks='%scf Convergence verytight\n maxiter 300 end\n %pal nprocs 1 end'
+        orcasimpleinput='tightscf B3LYP/G def2-SVP kdiis Opt',
+        orcablocks='%scf maxiter 200 end\n%pal nprocs 8 end'
     )
     atoms.calc = calc
     e1 = atoms.get_potential_energy()
+    print(f'hydrogen molecule energy: {e1:5.2f} eV')
 
     relax = QuasiNewton(atoms, logfile='qn.log')
     relax.run(fmax=0.05)
     e2 = atoms.get_potential_energy()
-
-    print(f'hydrogen molecule energy: {e1:5.2f} eV')
     print(f'hydrogen molecule energy: {e2:5.2f} eV')
-    calc.write('temp.gpw')
 
 
 def main(smiles: str) -> None:
@@ -92,9 +89,9 @@ def main(smiles: str) -> None:
 
     atoms.center(vacuum=5.0)
     atoms = pre_optimize(atoms)
-    #test_orca(atoms)
+    test_orca(atoms)
     #test_gpaw(atoms)
-    test_nwchem(atoms)
+    #test_nwchem(atoms)
 
 
 if __name__ == "__main__":
