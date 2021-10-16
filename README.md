@@ -2,8 +2,8 @@
 Material Simulation Toolkit
 
 `matk` is a dockerized environment to run `nwchem`, `gpaw` and `orca` with `ase`:
-- base OS image: registry.fedoraproject.org/fedora-minimal:latest
-- python 3.9.7
+- base OS image: `registry.fedoraproject.org/fedora-minimal:latest`
+- `python 3.9.7`
 - latest packages from fedora: 
   - `environment-modules`, `openmpi`, `python3-devel`
   - `openblas-devel`, `openblas-openmp`, `openblas-threads`
