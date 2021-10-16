@@ -26,7 +26,7 @@ services:
       - ${MATK_PATH}/.settings/jupyter_notebook_config.py:/root/.jupyter/jupyter_notebook_config.py:ro
     shm_size: '1gb'
     ports:
-      - 8889:8889
+      - 8989:8989
     working_dir: /matk
     stdin_open: true
     tty: true
