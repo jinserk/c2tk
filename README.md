@@ -23,7 +23,7 @@ Material Simulation Toolkit
 2. download orca 5.0.1
 **ORCA is free only for academic use**
 register [here](https://orcaforum.kofo.mpg.de/index.php) and go downloads.\
-click `ORCA 5.0.1` post and choose `ORCA 5.0.1, Linux, x86-64, shared-version, .tar.xz Archive`.\
+click `ORCA 5.0.1` post and choose `ORCA 5.0.1, Linux, x86-64, shared-version, .tar.xz Archive`.
 ```
 cd matk
 mkdir .downloads
@@ -37,6 +37,13 @@ cp <your-download-path>/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz .downlo
 
 ## HOW TO USE
 
+Basically you can use docker and docker compose commands. We provide a script `./matk` for your convenience.
+
+### Script help
+```
+./matk help
+```
+
 ### Jupyter notebook
 run `matk` container
 ```
@@ -44,7 +51,8 @@ run `matk` container
 ```
 
 within ~1 minutes Jupyter notebook server will be ready.\
-you can connect to http://localhost:8989. The default password is `Passw0rd!`
+you can connect to http://localhost:8989.\
+The default password is `Passw0rd!`.
 
 ### Shell environment
 run `matk` shell
@@ -52,7 +60,8 @@ run `matk` shell
 ./matk bash
 ```
 
-The default working dir is `/matk`. You can try to run `nwchem_openmpi` or `/opt/orca501/orca`.
+The default working dir is `/matk`.\
+You can try to run `nwchem_openmpi` or `/opt/orca501/orca`.
 
 ### Python environment
 run `ipython` shell
