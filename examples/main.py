@@ -58,12 +58,12 @@ def test_gpaw(atoms: Atoms) -> None:
     )
     atoms.calc = calc
     e1 = atoms.get_potential_energy()
-    print(f'hydrogen molecule energy: {e1:5.2f} eV')
+    print(f'test molecule energy: {e1:5.2f} eV')
     """
     relax = QuasiNewton(atoms, logfile='qn.log')
     relax.run(fmax=0.05)
     e2 = atoms.get_potential_energy()
-    print(f'hydrogen molecule energy: {e2:5.2f} eV')
+    print(f'test molecule energy: {e2:5.2f} eV')
     """
     calc.write('temp.gpw')
 
@@ -76,12 +76,12 @@ def test_orca(atoms: Atoms) -> None:
     )
     atoms.calc = calc
     e1 = atoms.get_potential_energy()
-    print(f'hydrogen molecule energy: {e1:5.2f} eV')
+    print(f'test molecule energy: {e1:5.2f} eV')
 
     relax = QuasiNewton(atoms, logfile='qn.log')
     relax.run(fmax=0.05)
     e2 = atoms.get_potential_energy()
-    print(f'hydrogen molecule energy: {e2:5.2f} eV')
+    print(f'test molecule energy: {e2:5.2f} eV')
 
 
 def main(smiles: str) -> None:
