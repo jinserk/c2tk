@@ -1,6 +1,8 @@
 # matk
 Material Simulation Toolkit
 
+[![DOI](https://zenodo.org/badge/414423138.svg)](https://zenodo.org/badge/latestdoi/414423138)
+
 `matk` is a dockerized environment to run `nwchem`, `gpaw` and `orca` with `ase`:
 - base OS image: `registry.fedoraproject.org/fedora-minimal:latest`
 - `python 3.9.7`
@@ -71,7 +73,7 @@ or run your python scripts
 ```
 @software{Baik_Material_Simulation_Toolki_2021,
 author = {Baik, Jinserk},
-doi = {10.5281/zenodo.5574254},
+doi = {10.5281/zenodo.5574253},
 month = {10},
 title = {{Material Simulation Toolki}},
 url = {https://github.com/jinserk/matk},
