@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from pathlib import Path
 
 from ase import Atoms
 from ase.calculators.qchem import QChem
@@ -12,12 +13,17 @@ from matk.conformer import get_atoms, pre_optimize
 #from matk.nwchem import NWChemWrapper, pre_optimize
 
 
+scratch_path = Path('/matk/scratch')
+scratch_path.mkdir(mode=755, parents=True, exist_ok=True)
+
+
 def test_qchem(atoms: Atoms) -> None:
     calc = QChem(
         label='qchem',
         method='B3LYP',
         basis='6-31+G*',
-        np=1, nt=4
+        np=1, nt=4,
+        directory=scratch_path,
     )
     atoms.calc = calc
 
@@ -31,7 +37,8 @@ def test_nwchem(atoms:Atoms) -> None:
           maxiter=2000,
           xc='B3LYP',
         ),
-        basis='6-31+G*'
+        basis='6-31+G*',
+        directory=scratch_path,
     )
     atoms.calc = calc
 
@@ -55,6 +62,7 @@ def test_gpaw(atoms: Atoms) -> None:
         xc='PBE',
         occupations=FermiDirac(0.0, fixmagmom=True),
         txt='temp.gpo',
+        directory=scratch_path,
     )
     atoms.calc = calc
     e1 = atoms.get_potential_energy()
@@ -72,7 +80,8 @@ def test_orca(atoms: Atoms) -> None:
     calc = ORCA(
         label='temp',
         orcasimpleinput='tightscf B3LYP/G def2-SVP kdiis Opt',
-        orcablocks='%scf maxiter 200 end\n%pal nprocs 8 end'
+        orcablocks='%scf maxiter 200 end\n%pal nprocs 8 end',
+        directory=scratch_path,
     )
     atoms.calc = calc
     e1 = atoms.get_potential_energy()
@@ -89,9 +98,9 @@ def main(smiles: str) -> None:
 
     atoms.center(vacuum=5.0)
     atoms = pre_optimize(atoms)
-    test_orca(atoms)
+    #test_orca(atoms)
     #test_gpaw(atoms)
-    #test_nwchem(atoms)
+    test_nwchem(atoms)
 
 
 if __name__ == "__main__":

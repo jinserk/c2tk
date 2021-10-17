@@ -1,5 +1,5 @@
-# matk
-Material Simulation Toolkit
+# MATK
+MATerial simulation Toolkit
 
 [![DOI](https://zenodo.org/badge/414423138.svg)](https://zenodo.org/badge/latestdoi/414423138)
 
@@ -71,7 +71,7 @@ run `ipython` shell
 
 or run your python scripts
 ```
-./matk python examples/main.py
+./matk python examples/test.py
 ```
 
 ### Docker container down
