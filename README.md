@@ -16,11 +16,11 @@ Material Simulation Toolkit
 - latest packages from pypi: `ase`, `gpaw`, `rdkit-pypi`, `networkx`, `matplotlib`
 - install support for `orca-5.0.1` (if you download the binary from the [official site](https://orcaforum.kofo.mpg.de/app.php/dlext/))
 
-## Installation
+## INSTALLATION
 
-### clone repo
+1. clone repo
 
-### download orca 5.0.1
+2. download orca 5.0.1
 **ORCA is free only for academic use**
 register [here](https://orcaforum.kofo.mpg.de/index.php) and go downloads.\
 click `ORCA 5.0.1` post and choose `ORCA 5.0.1, Linux, x86-64, shared-version, .tar.xz Archive`.\
@@ -30,12 +30,12 @@ mkdir .downloads
 cp <your-download-path>/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz .downloads
 ```
 
-### build image
+3 build image
 ```
 ./matk bulid
 ```
 
-## How to use
+## HOW TO USE
 
 ### Jupyter notebook
 run `matk` container
@@ -43,7 +43,8 @@ run `matk` container
 ./matk up
 ```
 
-after 1 or 2 min, you can connect to http://localhost:8989. The default password is `Passw0rd!`
+within ~1 minutes Jupyter notebook server will be ready.\
+you can connect to http://localhost:8989. The default password is `Passw0rd!`
 
 ### Shell environment
 run `matk` shell
