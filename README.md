@@ -65,3 +65,6 @@ or run your python scripts
 ```
 ./matk down
 ```
+
+# LICENSE
+BSD-3
