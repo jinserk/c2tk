@@ -93,4 +93,4 @@ year = {2021}
 ```
 
 # LICENSE
-[BSD 3-Cause License](https://github.com/jinserk/matk/blob/main/LICENSE)
+[BSD 3-Clause License](https://github.com/jinserk/matk/blob/main/LICENSE)
