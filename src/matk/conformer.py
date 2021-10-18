@@ -1,3 +1,4 @@
+from pathlib import Path
 import random
 from typing import Optional
 
@@ -11,6 +12,8 @@ from rdkit.Chem.AllChem import (
     MMFFGetMoleculeForceField, MMFFGetMoleculeProperties,
     UFFGetMoleculeForceField,
 )
+
+from . import settings
 
 
 def guess_conformer(mol: Chem.rdchem.Mol,
@@ -65,10 +68,13 @@ def get_atoms(smiles: str) -> ase.Atoms:
 
 def pre_optimize(atoms: ase.Atoms,
                  fmax: float = 0.05) -> None:
+    logfile = Path(settings.SCRATCH_PATH).joinpath("temp.pre")
     _calc = atoms.calc
+
     atoms.calc = EMT()
-    opt = LBFGS(atoms, logfile=f"temp.pre")
+    opt = LBFGS(atoms, logfile=logfile)
     opt.run(fmax=fmax)
+
     atoms.calc = _calc
     return atoms
 

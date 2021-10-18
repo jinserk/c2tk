@@ -1,4 +1,6 @@
 FROM registry.fedoraproject.org/fedora-minimal:latest
+MAINTAINER Jinserk Baik <jinserk.baik@gmail.com>
+
 ENV PYTHONUNBUFFERED=1
 
 RUN microdnf update -y \
@@ -28,7 +30,8 @@ RUN echo -e ". /etc/profile\nmodule load mpi/openmpi-${ARCH}" > /root/.bash_prof
 RUN cp /root/.bash_profile /root/.zprofile
 RUN . /etc/profile \
     && module load mpi/openmpi-${ARCH} \
-    && pip3 install -U --no-cache-dir pip setuptools wheel pyyaml pytest numpy scipy ipython jupyter
+    && pip3 install -U --no-cache-dir pip setuptools wheel pyyaml \
+       pytest numpy scipy ipython jupyter python-dotenv loguru
     
 WORKDIR /root
 RUN . /etc/profile \
@@ -53,11 +56,7 @@ RUN mv /opt/orca_5_0_1_linux_x86-64_shared_openmpi411 /opt/orca501
 ENV PATH="/opt/orca501:${PATH}"
 ENV LD_LIBRARY_PATH="/opt/orca501:${LD_LIBRARY_PATH}"
 
-ARG NPROC=1
 ENV OMPI_ALLOW_RUN_AS_ROOT=1
 ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 COPY .settings/mca-params.conf /root/.openmpi/mca-params.conf
-
-ENV ASE_NWCHEM_COMMAND="mpirun -np ${NPROC} nwchem_openmpi PREFIX.nwi >> PREFIX.nwo 2> PREFIX.err"
-ENV ASE_ORCA_COMMAND="/opt/orca501/orca PREFIX.inp >> PREFIX.out 2> PREFIX.err"
 

@@ -1,19 +1,72 @@
-# The code in this file originated from project ESTEEM
-# https://bitbucket.org/ndmhine/esteem/
-# and its author Nicholas Hine
-
 import os
 from typing import Optional
 
 import numpy as np
 
 import ase
-from ase.io import xyz
-from ase.calculators.nwchem import NWChem
-from ase.calculators.calculator import PropertyNotImplementedError
+from ase import io
+from ase.calculators.calculator import (
+    FileIOCalculator,
+    PropertyNotImplementedError,
+)
+from ase.spectrum.band_structure import BandStructure
 from ase.units import Hartree
 
-from .atoms import Atoms
+from .calculator import MatkFileIOCalculator
+from .. import is_mpi_enabled, settings
+
+
+class NWChem(MatkFileIOCalculator):
+    implemented_properties = ['energy', 'free_energy',
+                              'forces', 'stress', 'dipole']
+
+    if is_mpi_enabled():
+        command = 'nwchem_openmpi PREFIX.nwi >> PREFIX.nwo 2> PREFIX.err'
+    else:
+        command = 'nwchem PREFIX.nwi >> PREFIX.nwo 2> PREFIX.err'
+
+    accepts_bandpath_keyword = True
+    discard_results_on_any_change = True
+
+    def __init__(self, restart=None,
+                 ignore_bad_restart_file=FileIOCalculator._deprecated,
+                 label='nwchem', atoms=None, command=None, **kwargs):
+        super().__init__(restart, ignore_bad_restart_file,
+                         label, atoms, command, **kwargs)
+        self.calc = None
+
+    def write_input(self, atoms, properties=None, system_changes=None):
+        FileIOCalculator.write_input(self, atoms, properties, system_changes)
+
+        # Prepare perm and scratch directories
+        perm = os.path.abspath(self.parameters.get('perm', self.label))
+        scratch = os.path.abspath(self.parameters.get('scratch', self.label))
+        os.makedirs(perm, exist_ok=True)
+        os.makedirs(scratch, exist_ok=True)
+
+        io.write(self.label + '.nwi', atoms, properties=properties,
+                 label=self.label, **self.parameters)
+
+    def read_results(self):
+        output = io.read(self.label + '.nwo')
+        self.calc = output.calc
+        self.results = output.calc.results
+
+    def band_structure(self):
+        self.calculate()
+        perm = self.parameters.get('perm', self.label)
+        if self.calc.get_spin_polarized():
+            alpha = np.loadtxt(os.path.join(perm, self.label + '.alpha_band'))
+            beta = np.loadtxt(os.path.join(perm, self.label + '.beta_band'))
+            energies = np.array([alpha[:, 1:], beta[:, 1:]]) * Hartree
+        else:
+            data = np.loadtxt(os.path.join(perm,
+                                           self.label + '.restricted_band'))
+            energies = data[np.newaxis, :, 1:] * Hartree
+        eref = self.calc.get_fermi_level()
+        if eref is None:
+            eref = 0.
+        return BandStructure(self.parameters.bandpath, energies, eref)
 
 
 class NWChemWrapper:
