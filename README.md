@@ -1,5 +1,4 @@
-# C2TK
-Computationl Chemistry Toolkit
+# C2TK: Computationl Chemistry Toolkit
 
 [![DOI](https://zenodo.org/badge/414423138.svg)](https://zenodo.org/badge/latestdoi/414423138)
 
