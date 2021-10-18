@@ -31,7 +31,6 @@ fn_help()
 
 cmd_prefix="${DOCKER_COMPOSE_CMD} -f ${DOCKER_PATH}/docker-compose.yml -p matk"
 cmd_str="${@:1}"
-set -x 
 
 case $1 in
     "up")

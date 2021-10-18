@@ -39,8 +39,6 @@ class MatkFileIOCalculator(FileIOCalculator):
         else:
             real_command = shlex.split(command)
 
-        print(real_command, self.directory)
-
         try:
             proc = sp.Popen(real_command, cwd=self.directory, env=settings.env)
         except OSError as err:
