@@ -8,8 +8,8 @@ from ase.optimize import LBFGS, QuasiNewton
 
 from gpaw import GPAW, PW, FermiDirac
 
-from matk.conformer import get_atoms, pre_optimize
-from matk.calculators.nwchem import NWChem
+from c2tk.conformer import get_atoms, pre_optimize
+from c2tk.calculators.nwchem import NWChem
 
 
 def test_qchem(atoms: Atoms) -> None:

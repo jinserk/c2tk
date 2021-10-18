@@ -11,7 +11,7 @@ from ase.calculators.calculator import (
 from .. import settings, is_mpi_enabled
 
 
-class MatkFileIOCalculator(FileIOCalculator):
+class C2TKFileIOCalculator(FileIOCalculator):
 
     def __init__(self, *args, **kwargs):
         if 'directory' not in kwargs:

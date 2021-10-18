@@ -4,8 +4,8 @@ authors:
 - family-names: "Baik"
   given-names: "Jinserk"
   orcid: "https://orcid.org/0000-0003-2623-5919"
-title: "Material Simulation Toolki"
+title: "C2TK: Comp. Chem. Toolkit"
 version: 0.0.1
 doi: 10.5281/zenodo.5574254
 date-released: 2021-10-16
-url: "https://github.com/jinserk/matk"
+url: "https://github.com/jinserk/c2tk.git"

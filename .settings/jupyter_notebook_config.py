@@ -389,7 +389,7 @@ c.NotebookApp.ip = '0.0.0.0'
 ## The directory to use for notebooks and kernels.
 #  Default: ''
 # c.NotebookApp.notebook_dir = ''
-c.NotebookApp.notebook_dir = '/matk/examples'
+c.NotebookApp.notebook_dir = '/c2tk/examples'
 
 ## Whether to open in a browser after starting. The specific browser used is
 #  platform dependent and determined by the python standard library `webbrowser`

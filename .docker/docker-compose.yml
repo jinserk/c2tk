@@ -10,24 +10,24 @@ services:
     environment:
       - TZ=US/Eastern
       - PGTZ=UTC
-      - POSTGRES_DB=matk
+      - POSTGRES_DB=c2tk
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  matk:
+  c2tk:
     build:
-      context: ${MATK_PATH}
-      dockerfile: ${MATK_PATH}/.docker/Dockerfile
+      context: ${C2TK_PATH}
+      dockerfile: ${C2TK_PATH}/.docker/Dockerfile
       args:
         - NPROC=${NPROC}
     volumes:
-      - ${MATK_PATH}:/matk
-      - ${MATK_PATH}/.settings/ipython_config.py:/root/.ipython/profile_default/ipython_config.py:ro
-      - ${MATK_PATH}/.settings/jupyter_notebook_config.py:/root/.jupyter/jupyter_notebook_config.py:ro
+      - ${C2TK_PATH}:/c2tk
+      - ${C2TK_PATH}/.settings/ipython_config.py:/root/.ipython/profile_default/ipython_config.py:ro
+      - ${C2TK_PATH}/.settings/jupyter_notebook_config.py:/root/.jupyter/jupyter_notebook_config.py:ro
     shm_size: '1gb'
     ports:
       - 8989:8989
-    working_dir: /matk
+    working_dir: /c2tk
     stdin_open: true
     tty: true
     depends_on:

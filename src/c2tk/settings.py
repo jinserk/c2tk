@@ -7,7 +7,7 @@ from dotenv import load_dotenv, dotenv_values
 # code default
 # all values defined here should be str, bytes or os.PathLike objs
 default_env = dict(
-    SCRATCH_PATH="/matk/scratch",
+    SCRATCH_PATH="/c2tk/scratch",
     NPROC=f"{os.cpu_count()}",
 )
 

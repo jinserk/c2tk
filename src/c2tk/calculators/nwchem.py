@@ -12,11 +12,11 @@ from ase.calculators.calculator import (
 from ase.spectrum.band_structure import BandStructure
 from ase.units import Hartree
 
-from .calculator import MatkFileIOCalculator
+from .calculator import C2TKFileIOCalculator
 from .. import is_mpi_enabled, settings
 
 
-class NWChem(MatkFileIOCalculator):
+class NWChem(C2TKFileIOCalculator):
     implemented_properties = ['energy', 'free_energy',
                               'forces', 'stress', 'dipole']
 

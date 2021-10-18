@@ -1,9 +1,9 @@
-# MATK
-MATerial simulation Toolkit
+# C2TK
+Computationl Chemistry Toolkit
 
 [![DOI](https://zenodo.org/badge/414423138.svg)](https://zenodo.org/badge/latestdoi/414423138)
 
-`matk` is a dockerized environment to run `nwchem`, `gpaw` and `orca` with `ase`:
+`c2tk` is a dockerized environment to run `nwchem`, `gpaw` and `orca` with `ase`:
 - base OS image: `registry.fedoraproject.org/fedora-minimal:latest`
 - `python 3.9.7`
 - latest packages from fedora:
@@ -25,29 +25,29 @@ MATerial simulation Toolkit
 register [here](https://orcaforum.kofo.mpg.de/index.php) and go downloads.\
 click `ORCA 5.0.1` post and choose `ORCA 5.0.1, Linux, x86-64, shared-version, .tar.xz Archive`.
 ```
-cd matk
+cd c2tk
 mkdir .downloads
 cp <your-download-path>/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz .downloads
 ```
 
 3. build image
 ```
-./matk bulid
+./c2tk bulid
 ```
 
 ## HOW TO USE
 
-Basically you can use docker and docker compose commands. We provide a script `./matk` for your convenience.
+Basically you can use docker and docker compose commands. We provide a script `./c2tk` for your convenience.
 
 ### Script help
 ```
-./matk help
+./c2tk help
 ```
 
 ### Jupyter notebook
-run `matk` container
+run `c2tk` container
 ```
-./matk up
+./c2tk up
 ```
 
 within ~1 minutes Jupyter notebook server will be ready.\
@@ -55,28 +55,28 @@ you can connect to http://localhost:8989.\
 The default password is `Passw0rd!`.
 
 ### Shell environment
-run `matk` shell
+run `c2tk` shell
 ```
-./matk bash
+./c2tk bash
 ```
 
-The default working dir is `/matk`.\
+The default working dir is `/c2tk`.\
 You can try to run `nwchem_openmpi` or `/opt/orca501/orca`.
 
 ### Python environment
 run `ipython` shell
 ```
-./matk ipython
+./c2tk ipython
 ```
 
 or run your python scripts
 ```
-./matk python examples/test.py
+./c2tk python examples/test.py
 ```
 
 ### Docker container down
 ```
-./matk down
+./c2tk down
 ```
 
 # CITATION
@@ -86,11 +86,11 @@ author = {Baik, Jinserk},
 doi = {10.5281/zenodo.5574253},
 month = {10},
 title = {{Material Simulation Toolki}},
-url = {https://github.com/jinserk/matk},
+url = {https://github.com/jinserk/c2tk},
 version = {0.0.1},
 year = {2021}
 }
 ```
 
 # LICENSE
-[BSD 3-Clause License](https://github.com/jinserk/matk/blob/main/LICENSE)
+[BSD 3-Clause License](https://github.com/jinserk/c2tk/blob/main/LICENSE)

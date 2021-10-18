@@ -1,0 +1,63 @@
+#!/bin/bash
+export C2TK_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+export DOCKER_PATH="${C2TK_PATH}/.docker"
+export NPROC="$( nproc )"
+
+if command -v docker-compose &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker-compose"     # v1
+else
+    DOCKER_COMPOSE_CMD="docker compose"     # v2
+fi
+
+fn_help()
+{
+    echo "c2tk command script"
+    echo
+    echo "Usage: "
+    echo "  c2tk up                 run the kyumatic env in background"
+    echo "  c2tk down               teardown all kyumatic env"
+    echo "  c2tk build              build docker-compose image"
+    echo "  c2tk bash               get the interactive bash shell"
+    echo "  c2tk <cmd> <args>       execute cmd with args on container"
+    echo "  c2tk [help|-h|--help]   show this help"
+    echo
+    echo "  examples:"
+    echo "    ./c2tk up"
+    echo "    ./c2tk python main.py"
+    echo
+}
+
+[[ $# -lt 1 ]] && fn_help && exit 1
+
+cmd_prefix="${DOCKER_COMPOSE_CMD} -f ${DOCKER_PATH}/docker-compose.yml -p c2tk"
+cmd_str="${@:1}"
+
+case $1 in
+    "up")
+        ${cmd_prefix} up -d --remove-orphans
+        #${cmd_prefix} up
+        ;;
+    "down")
+        ${cmd_prefix} down --remove-orphans
+        ;;
+    "build")
+        ${cmd_prefix} build --progress plain c2tk
+        ;;
+    "bash")
+        ${cmd_prefix} up -d --remove-orphans
+        ${cmd_prefix} exec c2tk /bin/bash -l
+        ;;
+    "help")
+        fn_help
+        ;;
+    "-h")
+        fn_help
+        ;;
+    "--help")
+        fn_help
+        ;;
+    *)
+        ${cmd_prefix} up -d --remove-orphans
+        ${cmd_prefix} exec c2tk ${cmd_str}
+        ;;
+esac
