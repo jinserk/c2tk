@@ -35,7 +35,7 @@ class MatkFileIOCalculator(FileIOCalculator):
         command = command.replace('PREFIX', self.prefix)
 
         if is_mpi_enabled():
-            real_command = shlex.split(f'mpirun -np {settings.NPROC} {command}')
+            real_command = shlex.split(f'mpiexec -np {settings.NPROC} {command}')
         else:
             real_command = shlex.split(command)
 

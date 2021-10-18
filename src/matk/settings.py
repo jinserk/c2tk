@@ -5,10 +5,11 @@ from dotenv import load_dotenv, dotenv_values
 
 
 # code default
-default_env = {
-    "SCRATCH_PATH": "/matk/scratch",
-    "NPROC": f"{os.cpu_count()}",
-}
+# all values defined here should be str, bytes or os.PathLike objs
+default_env = dict(
+    SCRATCH_PATH="/matk/scratch",
+    NPROC=f"{os.cpu_count()}",
+)
 
 
 # import env

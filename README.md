@@ -20,8 +20,8 @@ MATerial simulation Toolkit
 
 1. clone repo
 
-2. download orca 5.0.1
-**ORCA is free only for academic use**
+2. download orca 5.0.1\
+**ORCA is free only for academic use**\
 register [here](https://orcaforum.kofo.mpg.de/index.php) and go downloads.\
 click `ORCA 5.0.1` post and choose `ORCA 5.0.1, Linux, x86-64, shared-version, .tar.xz Archive`.
 ```
