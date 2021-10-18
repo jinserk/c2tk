@@ -35,12 +35,13 @@ class MatkFileIOCalculator(FileIOCalculator):
         command = command.replace('PREFIX', self.prefix)
 
         if is_mpi_enabled():
-            real_command = shlex.split(f'mpiexec -np {settings.NPROC} {command}')
-        else:
-            real_command = shlex.split(command)
+            command = f'mpiexec -np {settings.NPROC} {command}'
+
+        #real_command = shlex.split(command)
+        #print(real_command)
 
         try:
-            proc = sp.Popen(real_command, cwd=self.directory, env=settings.env)
+            proc = sp.Popen(command, cwd=self.directory, shell=True, env=settings.env)
         except OSError as err:
             # Actually this may never happen with shell=True, since
             # probably the shell launches successfully.  But we soon want
