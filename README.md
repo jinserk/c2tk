@@ -80,7 +80,7 @@ or run your python scripts
 
 # CITATION
 ```
-@software{Baik_C2TK_Comp._Chem._2021,
+@software{Baik_C2TK_Computational_Chemistry_2021,
 title = {{C2TK: Computational Chemistry Toolkit}},
 author = {Baik, Jinserk},
 doi = {10.5281/zenodo.5574254},
