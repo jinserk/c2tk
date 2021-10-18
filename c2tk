@@ -11,7 +11,10 @@ fi
 
 fn_help()
 {
-    echo "c2tk command script"
+    echo "C2TK: Computational Chemistry Toolkit"
+    echo "command script"
+    echo
+    echo "Jinserk Baik <jinserk.baik@gmail.com>"
     echo
     echo "Usage: "
     echo "  c2tk up                 run the kyumatic env in background"
