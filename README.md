@@ -81,13 +81,13 @@ or run your python scripts
 
 # CITATION
 ```
-@software{Baik_Material_Simulation_Toolki_2021,
+@software{Baik_C2TK_Comp._Chem._2021,
+title = {{C2TK: Computational Chemistry Toolkit}},
 author = {Baik, Jinserk},
-doi = {10.5281/zenodo.5574253},
-month = {10},
-title = {{Material Simulation Toolki}},
-url = {https://github.com/jinserk/c2tk},
+doi = {10.5281/zenodo.5574254},
+url = {https://github.com/jinserk/c2tk.git},
 version = {0.0.1},
+month = {10},
 year = {2021}
 }
 ```
