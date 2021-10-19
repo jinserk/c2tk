@@ -19,6 +19,7 @@ RUN microdnf update -y \
     && microdnf clean all
     
 ARG ARCH=x86_64
+ARG NPROC=2
 ARG VDWXC_VER=0.4.0
 ARG ELPA_VER=2021.05.002
 
@@ -51,12 +52,15 @@ RUN . /etc/profile \
     && pip3 install -U --no-cache-dir matplotlib ase rdkit-pypi gpaw networkx \
     && gpaw install-data --register /root/.gpaw
     
+ENV ORCA_PATH=/opt/orca501
+
 ADD ./.downloads/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz /opt
 RUN mv /opt/orca_5_0_1_linux_x86-64_shared_openmpi411 /opt/orca501
-ENV PATH="/opt/orca501:${PATH}"
-ENV LD_LIBRARY_PATH="/opt/orca501:${LD_LIBRARY_PATH}"
+ENV PATH="${ORCA_PATH}:${PATH}"
+ENV LD_LIBRARY_PATH="${ORCA_PATH}:${LD_LIBRARY_PATH}"
 
 ENV OMPI_ALLOW_RUN_AS_ROOT=1
 ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+ENV OMP_NUM_THREADS=${NPROC}
 COPY .settings/mca-params.conf /root/.openmpi/mca-params.conf
 

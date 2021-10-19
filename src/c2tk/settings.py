@@ -9,6 +9,7 @@ from dotenv import load_dotenv, dotenv_values
 default_env = dict(
     SCRATCH_PATH="/c2tk/scratch",
     NPROC=f"{os.cpu_count()}",
+    ORCA_PATH="/opt/orca501",
 )
 
 
@@ -28,3 +29,5 @@ SCRATCH_PATH = env["SCRATCH_PATH"]
 Path(SCRATCH_PATH).mkdir(mode=0o755, parents=True, exist_ok=True)
 
 NPROC = env["NPROC"]
+
+ORCA_PATH = env["ORCA_PATH"]

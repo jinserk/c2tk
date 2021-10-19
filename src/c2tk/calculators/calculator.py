@@ -13,10 +13,11 @@ from .. import settings, is_mpi_enabled
 
 class C2TKFileIOCalculator(FileIOCalculator):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, mpi_embed_cmd=False, *args, **kwargs):
         if 'directory' not in kwargs:
             kwargs['directory'] = settings.SCRATCH_PATH
         super().__init__(*args, **kwargs)
+        self.mpi_embed_cmd = mpi_embed_cmd
 
     def calculate(self, atoms=None, properties=['energy'],
                   system_changes=all_changes):
@@ -34,7 +35,7 @@ class C2TKFileIOCalculator(FileIOCalculator):
         command = self.command
         command = command.replace('PREFIX', self.prefix)
 
-        if is_mpi_enabled():
+        if is_mpi_enabled() and not self.mpi_embed_cmd:
             command = f'mpiexec -np {settings.NPROC} {command}'
 
         #real_command = shlex.split(command)

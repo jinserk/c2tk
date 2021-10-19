@@ -3,13 +3,14 @@ from pathlib import Path
 
 from ase import Atoms
 from ase.calculators.qchem import QChem
-from ase.calculators.orca import ORCA
 from ase.optimize import LBFGS, QuasiNewton
 
-from gpaw import GPAW, PW, FermiDirac
+from gpaw import PW, FermiDirac
 
 from c2tk.conformer import get_atoms, pre_optimize
 from c2tk.calculators.nwchem import NWChem
+from c2tk.calculators.orca import ORCA
+from c2tk.calculators.gpaw import GPAW
 
 
 def test_qchem(atoms: Atoms) -> None:
@@ -34,9 +35,13 @@ def test_nwchem(atoms:Atoms) -> None:
         basis='6-31+G*',
     )
     atoms.calc = calc
+    e1 = atoms.get_potential_energy()
+    print(f'test molecule energy: {e1:5.2f} eV')
 
     opt = LBFGS(atoms)
     opt.run(fmax=0.05)
+    e2 = atoms.get_potential_energy()
+    print(f'test molecule energy: {e2:5.2f} eV')
 
     """
     obj = NWChemWrapper(nproc=1, mem=8000)
@@ -88,10 +93,10 @@ def main(smiles: str) -> None:
     atoms = get_atoms(smiles)
 
     atoms.center(vacuum=5.0)
-    #atoms = pre_optimize(atoms)
+    atoms = pre_optimize(atoms)
     #test_orca(atoms)
-    #test_gpaw(atoms)
-    test_nwchem(atoms)
+    test_gpaw(atoms)
+    #test_nwchem(atoms)
 
 
 if __name__ == "__main__":
