@@ -32,7 +32,8 @@ RUN cp /root/.bash_profile /root/.zprofile
 RUN . /etc/profile \
     && module load mpi/openmpi-${ARCH} \
     && pip3 install -U --no-cache-dir pip setuptools wheel pyyaml \
-       pytest numpy scipy ipython jupyter python-dotenv loguru
+       pytest numpy scipy ipython jupyter python-dotenv loguru nglview
+RUN jupyter-nbextension enable nglview --py --sys-prefix
     
 WORKDIR /root
 RUN . /etc/profile \

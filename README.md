@@ -12,7 +12,10 @@
   - `elpa-openmpi-devel`, `blacs-openmpi-devel`, `hdf5-openmpi-devel`
   - `nwchem`, `nwchem-openmpi`
 - source build:`libvdwxc-0.4.0`
-- latest packages from pypi: `ase`, `gpaw`, `rdkit-pypi`, `networkx`, `matplotlib`
+- latest packages from pypi:
+  - `python-dotenv`, `loguru`
+  - `ase`, `gpaw`, `rdkit-pypi`
+  - `networkx`, `matplotlib`, `nglview`
 - install support for `orca-5.0.1` (if you download the binary from the [official site](https://orcaforum.kofo.mpg.de/app.php/dlext/))
 
 ## INSTALLATION
