@@ -53,7 +53,7 @@ run `c2tk` container
 ```
 
 within ~1 minutes Jupyter notebook server will be ready.\
-you can connect to http://localhost:8989.\
+you can connect to the server via http://localhost:8989 .\
 The default password is `Passw0rd!`.
 
 ### Shell environment
