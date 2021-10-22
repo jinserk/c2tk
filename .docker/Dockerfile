@@ -23,6 +23,12 @@ ARG NPROC=2
 ARG VDWXC_VER=0.4.0
 ARG ELPA_VER=2021.05.002
 
+ENV OMPI_ALLOW_RUN_AS_ROOT=1
+ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+ENV OMP_NUM_THREADS=${NPROC}
+
+COPY .settings/mca-params.conf /root/.openmpi/mca-params.conf
+
 ENV C_INCLUDE_PATH=${C_INCLUDE_PATH}:/usr/include/elpa_openmp-${ELPA_VER}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 ENV RUNPATH=${RUNPATH}:/usr/lib64/openmpi/lib:/usr/local/lib
@@ -51,17 +57,12 @@ COPY .settings/gpaw-siteconfig.py /root/.gpaw/siteconfig.py
 RUN . /etc/profile \
     && module load mpi/openmpi-${ARCH} \
     && pip3 install -U --no-cache-dir matplotlib ase rdkit-pypi gpaw networkx \
-    && gpaw install-data --register /root/.gpaw
     
+RUN gpaw install-data --register /root/.gpaw
+
 ENV ORCA_PATH=/opt/orca501
 
 ADD ./.downloads/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz /opt
-RUN mv /opt/orca_5_0_1_linux_x86-64_shared_openmpi411 /opt/orca501
+RUN mv /opt/orca_5_0_1_linux_x86-64_shared_openmpi411 ${ORCA_PATH} 
 ENV PATH="${ORCA_PATH}:${PATH}"
 ENV LD_LIBRARY_PATH="${ORCA_PATH}:${LD_LIBRARY_PATH}"
-
-ENV OMPI_ALLOW_RUN_AS_ROOT=1
-ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
-ENV OMP_NUM_THREADS=${NPROC}
-COPY .settings/mca-params.conf /root/.openmpi/mca-params.conf
-
