@@ -20,14 +20,18 @@ services:
       dockerfile: ${C2TK_PATH}/.docker/Dockerfile
       args:
         - NPROC=${NPROC}
+        - USRNAME=${DOCKER_USER}
+        - USRID=${USRID}
+        - GRPID=${GRPID}
+    user: ${USRID}:${GRPID}
     volumes:
-      - ${C2TK_PATH}:/c2tk
-      - ${C2TK_PATH}/.settings/ipython_config.py:/root/.ipython/profile_default/ipython_config.py:ro
-      - ${C2TK_PATH}/.settings/jupyter_notebook_config.py:/root/.jupyter/jupyter_notebook_config.py:ro
+      - ${C2TK_PATH}:/home/${DOCKER_USER}/c2tk
+      - ${C2TK_PATH}/.settings/ipython_config.py:/home/${DOCKER_USER}/.ipython/profile_default/ipython_config.py:ro
+      - ${C2TK_PATH}/.settings/jupyter_notebook_config.py:/home/${DOCKER_USER}/.jupyter/jupyter_notebook_config.py:ro
     shm_size: '1gb'
     ports:
       - 8989:8989
-    working_dir: /c2tk
+    working_dir: /home/${DOCKER_USER}/c2tk
     stdin_open: true
     tty: true
     depends_on:
@@ -39,8 +43,8 @@ services:
         - net.ipv4.tcp_keepalive_intvl=200
         - net.ipv4.tcp_keepalive_probes=5
     command: >
-      bash -c "pip install -e .
-      && pip install -U -r requirements.txt
+      bash -c "pip install --user --no-cache-dir -e .
+      && pip install -U --user --no-cache-dir -r requirements.txt
       && jupyter notebook"
 
 volumes:
