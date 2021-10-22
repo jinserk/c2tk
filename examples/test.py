@@ -2,8 +2,10 @@
 from pathlib import Path
 
 from ase import Atoms
+from ase.calculators.emt import EMT
 from ase.calculators.qchem import QChem
 from ase.optimize import LBFGS, QuasiNewton
+from ase.vibrations import Vibrations
 
 from gpaw import PW, FermiDirac
 
@@ -22,8 +24,10 @@ def test_qchem(atoms: Atoms) -> None:
     )
     atoms.calc = calc
 
-    opt = LBFGS(atoms)
-    opt.run(fmax=0.05)
+    #opt = LBFGS(atoms)
+    #opt.run(fmax=0.05)
+    e1 = atoms.get_potential_energy()
+    print(f'test molecule energy: {e1:5.2f} eV')
 
 
 def test_nwchem(atoms:Atoms) -> None:
@@ -38,12 +42,12 @@ def test_nwchem(atoms:Atoms) -> None:
     e1 = atoms.get_potential_energy()
     print(f'test molecule energy: {e1:5.2f} eV')
 
+    """
     opt = LBFGS(atoms)
     opt.run(fmax=0.05)
     e2 = atoms.get_potential_energy()
     print(f'test molecule energy: {e2:5.2f} eV')
 
-    """
     obj = NWChemWrapper(nproc=1, mem=8000)
     calc_params = {
         'basis': '6-31+G*',
@@ -76,26 +80,45 @@ def test_gpaw(atoms: Atoms) -> None:
 def test_orca(atoms: Atoms) -> None:
     calc = ORCA(
         label='temp',
-        orcasimpleinput='tightscf B3LYP/G def2-SVP kdiis Opt',
+        orcasimpleinput='tightscf B3LYP/G def2-SVP kdiis opt freq',
         orcablocks='%scf maxiter 200 end\n%pal nprocs 8 end',
     )
     atoms.calc = calc
     e1 = atoms.get_potential_energy()
     print(f'test molecule energy: {e1:5.2f} eV')
-
+    """
     relax = QuasiNewton(atoms, logfile='qn.log')
     relax.run(fmax=0.05)
     e2 = atoms.get_potential_energy()
     print(f'test molecule energy: {e2:5.2f} eV')
+    """
+    vib = Vibrations(atoms)
+    vib.run()
+    vib.summary()
 
 
 def main(smiles: str) -> None:
     atoms = get_atoms(smiles)
 
-    atoms.center(vacuum=5.0)
-    atoms = pre_optimize(atoms)
-    #test_orca(atoms)
-    test_gpaw(atoms)
+    a1 = atoms.copy()
+    a1.center(vacuum=50.0)
+
+    a1.calc = EMT()
+    e1 = a1.get_potential_energy()
+    print(f'test molecule energy: {e1:5.2f} eV')
+
+    """
+    a2 = atoms.copy()
+    a2.center(vacuum=50.0)
+    a2 = pre_optimize(a2)
+
+    a2.calc = EMT()
+    e2 = a2.get_potential_energy()
+    print(f'test molecule energy: {e2:5.2f} eV')
+    """
+
+    test_orca(atoms)
+    #test_gpaw(atoms)
     #test_nwchem(atoms)
 
 

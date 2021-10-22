@@ -1,6 +1,8 @@
 import os
 import subprocess as sp
 
+import matplotlib
+
 
 try:
     # load environment-modules env
@@ -13,3 +15,5 @@ except:
 def is_mpi_enabled():
     from shutil import which
     return which('mpirun') is not None
+
+matplotlib.use('TKAgg')
