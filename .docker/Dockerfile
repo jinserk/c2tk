@@ -3,11 +3,14 @@ MAINTAINER Jinserk Baik <jinserk.baik@gmail.com>
 
 ENV PYTHONUNBUFFERED=1
 
+## todo with root
 RUN microdnf update -y \
     && microdnf install -y \
-    sudo wget bison byacc diffstat flex \
+    sudo curl wget bison byacc diffstat flex \
+    zlib-devel bzip2 bzip2-devel readline-devel libffi-devel \
+    sqlite sqlite-devel openssl openssl-devel \
     gcc gcc-c++ gcc-gfortran \
-    gettext git indent intltool libtool patch patchutils \
+    gettext make git indent intltool libtool patch patchutils \
     redhat-rpm-config rpm-build which \
     environment-modules \
     openmpi \
@@ -26,7 +29,6 @@ ARG GRPID=1000
 ARG VDWXC_VER=0.4.0
 ARG ELPA_VER=2021.05.002
 
-#RUN useradd -d /${USRNAME} -u ${USRID} -g ${GRPID} -G wheel -m -U -s /bin/bash ${USRNAME}
 RUN groupadd -g ${GRPID} ${USRNAME} \
     && useradd -u ${USRID} -g ${GRPID} -G wheel -m -s /bin/bash ${USRNAME} \
     && sed -i /etc/sudoers -re 's/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g' \
@@ -53,43 +55,51 @@ RUN . /etc/profile \
     && cd .. \
     && rm -rf libvdwxc-${VDWXC_VER}*
     
+## todo with user
 USER ${USRNAME}
-WORKDIR /home/${USRNAME}
+ENV HOME=/home/${USRNAME}
+WORKDIR ${HOME}
 
-#ENV OMPI_ALLOW_RUN_AS_ROOT=1
-#ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+RUN mkdir -p ${HOME}/.openmpi
+COPY .settings/mca-params.conf ${HOME}/.openmpi/mca-params.conf
 ENV OMP_NUM_THREADS=${NPROC}
-
-RUN mkdir -p /home/${USRNAME}/.openmpi
-COPY .settings/mca-params.conf /home/${USRNAME}/.openmpi/mca-params.conf
  
 ENV C_INCLUDE_PATH=${C_INCLUDE_PATH}:/usr/include/elpa_openmp-${ELPA_VER}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 ENV RUNPATH=${RUNPATH}:/usr/lib64/openmpi/lib:/usr/local/lib
-ENV PATH=/home/${USRNAME}/.local/bin:${PATH}
-   
-RUN echo -e ". /etc/profile\nmodule load mpi/openmpi-${ARCH}" > /home/${USRNAME}/.bash_profile
-RUN mkdir -p /home/${USRNAME}/.ipython/profile_default
-RUN mkdir -p /home/${USRNAME}/.jupyter
-#RUN cp /root/.bash_profile /root/.zprofile
-RUN . /home/${USRNAME}/.bash_profile \
-    && pip install -U --user --no-cache-dir pip setuptools wheel pyyaml \
+ENV PATH=${HOME}/.local/bin:${PATH}
+    
+COPY .settings/.bash_profile ${HOME}
+COPY .settings/.bash_profile ${HOME}/.profile
+COPY .settings/.bashrc ${HOME}
+
+RUN git clone git://github.com/pyenv/pyenv.git .pyenv 
+
+ENV PYENV_ROOT=${HOME}/.pyenv
+ENV PATH=${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${PATH}
+        
+RUN pyenv install 3.9.7 \
+    && pyenv global 3.9.7 \
+    && pyenv rehash
+
+RUN . ${HOME}/.bash_profile \
+    && pip install -U --no-cache-dir pip setuptools wheel pyyaml \
        pytest numpy scipy mpi4py ipython jupyter python-dotenv loguru
    
-RUN mkdir -p /home/${USRNAME}/.gpaw
-COPY .settings/gpaw-siteconfig.py /home/${USRNAME}/.gpaw/siteconfig.py
+RUN mkdir -p ${HOME}/.gpaw
+COPY .settings/gpaw-siteconfig.py ${HOME}/.gpaw/siteconfig.py
 
-RUN . /home/${USRNAME}/.bash_profile \
-    && pip install -U --user --no-cache-dir matplotlib networkx \
+RUN . ${HOME}/.bash_profile \
+    && pip install -U --no-cache-dir matplotlib networkx \
        ase rdkit-pypi gpaw nglview plams matscipy pyamg \
-    && gpaw install-data --register /home/${USRNAME}/.gpaw
+    && gpaw install-data --register ${HOME}/.gpaw
     
 RUN jupyter-nbextension enable nglview --py --user
 
 ENV ORCA_PATH=/opt/orca501
 
-ADD ./.downloads/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz /home/${USRNAME}
-RUN sudo mv /home/${USRNAME}/orca_5_0_1_linux_x86-64_shared_openmpi411 ${ORCA_PATH}
+ADD ./.downloads/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz ${HOME}
+RUN sudo mv ${HOME}/orca_5_0_1_linux_x86-64_shared_openmpi411 ${ORCA_PATH}
 
 ENV PATH="${ORCA_PATH}:${PATH}"
 ENV LD_LIBRARY_PATH="${ORCA_PATH}:${LD_LIBRARY_PATH}"
