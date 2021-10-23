@@ -34,7 +34,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 ENV RUNPATH=${RUNPATH}:/usr/lib64/openmpi/lib:/usr/local/lib
    
 RUN echo -e ". /etc/profile\nmodule load mpi/openmpi-${ARCH}" > /root/.bash_profile
-RUN cp /root/.bash_profile /root/.zprofile
+#RUN cp /root/.bash_profile /root/.zprofile
 RUN . /etc/profile \
     && module load mpi/openmpi-${ARCH} \
     && pip3 install -U --no-cache-dir pip setuptools wheel pyyaml \
@@ -42,8 +42,7 @@ RUN . /etc/profile \
 RUN jupyter-nbextension enable nglview --py --sys-prefix
     
 WORKDIR /root
-RUN . /etc/profile \
-    && module load mpi/openmpi-${ARCH} \
+RUN . /root/.bash_profile \
     && wget https://launchpad.net/libvdwxc/stable/${VDWXC_VER}/+download/libvdwxc-${VDWXC_VER}.tar.gz \
     && tar -xvf libvdwxc-${VDWXC_VER}.tar.gz \
     && cd libvdwxc-${VDWXC_VER}/ \
@@ -54,11 +53,9 @@ RUN . /etc/profile \
     
 WORKDIR /
 COPY .settings/gpaw-siteconfig.py /root/.gpaw/siteconfig.py
-RUN . /etc/profile \
-    && module load mpi/openmpi-${ARCH} \
+RUN . /root/.bash_profile \
     && pip3 install -U --no-cache-dir matplotlib ase rdkit-pypi gpaw networkx \
-    
-RUN gpaw install-data --register /root/.gpaw
+    && gpaw install-data --register /root/.gpaw
 
 ENV ORCA_PATH=/opt/orca501
 
