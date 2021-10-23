@@ -81,9 +81,8 @@ COPY .settings/gpaw-siteconfig.py /home/${USRNAME}/.gpaw/siteconfig.py
 
 RUN . /home/${USRNAME}/.bash_profile \
     && pip install -U --user --no-cache-dir matplotlib networkx \
-       ase rdkit-pypi gpaw nglview plams matscipy pyamg
-       
-RUN gpaw install-data --register /home/${USRNAME}/.gpaw
+       ase rdkit-pypi gpaw nglview plams matscipy pyamg \
+    && gpaw install-data --register /home/${USRNAME}/.gpaw
     
 RUN jupyter-nbextension enable nglview --py --user
 
