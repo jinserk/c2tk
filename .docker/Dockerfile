@@ -34,12 +34,10 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 ENV RUNPATH=${RUNPATH}:/usr/lib64/openmpi/lib:/usr/local/lib
    
 RUN echo -e ". /etc/profile\nmodule load mpi/openmpi-${ARCH}" > /root/.bash_profile
-#RUN cp /root/.bash_profile /root/.zprofile
 RUN . /etc/profile \
     && module load mpi/openmpi-${ARCH} \
     && pip3 install -U --no-cache-dir pip setuptools wheel pyyaml \
-       pytest numpy scipy ipython jupyter python-dotenv loguru nglview
-RUN jupyter-nbextension enable nglview --py --sys-prefix
+       pytest numpy scipy mpi4py ipython jupyter python-dotenv loguru
     
 WORKDIR /root
 RUN . /root/.bash_profile \
@@ -53,9 +51,13 @@ RUN . /root/.bash_profile \
     
 WORKDIR /
 COPY .settings/gpaw-siteconfig.py /root/.gpaw/siteconfig.py
+
 RUN . /root/.bash_profile \
-    && pip3 install -U --no-cache-dir matplotlib ase rdkit-pypi gpaw networkx \
+    && pip install -U --no-cache-dir matplotlib networkx \
+       ase rdkit-pypi gpaw nglview plams matscipy pyamg \
     && gpaw install-data --register /root/.gpaw
+
+RUN jupyter-nbextension enable nglview --py --sys-prefix
 
 ENV ORCA_PATH=/opt/orca501
 
