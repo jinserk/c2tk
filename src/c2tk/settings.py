@@ -4,10 +4,14 @@ from pathlib import Path
 from dotenv import load_dotenv, dotenv_values
 
 
+c2tk_path = Path("~/c2tk").expanduser()
+scratch_path = c2tk_path.joinpath("scratch")
+
 # code default
 # all values defined here should be str, bytes or os.PathLike objs
 default_env = dict(
-    SCRATCH_PATH="/c2tk/scratch",
+    C2TK_PATH=str(c2tk_path),
+    SCRATCH_PATH=str(scratch_path),
     NPROC=f"{os.cpu_count()}",
     ORCA_PATH="/opt/orca501",
 )
@@ -25,6 +29,7 @@ env = {
 
 
 # actual configs
+C2TK_PATH = env["C2TK_PATH"]
 SCRATCH_PATH = env["SCRATCH_PATH"]
 Path(SCRATCH_PATH).mkdir(mode=0o755, parents=True, exist_ok=True)
 

@@ -26,6 +26,8 @@ services:
     user: ${USRID}:${GRPID}
     volumes:
       - ${C2TK_PATH}:/home/${DOCKER_USER}/c2tk
+    environment:
+      - C2TK_PATH=/home/${DOCKER_USER}/c2tk
     shm_size: '1gb'
     ports:
       - 8989:8989
@@ -41,8 +43,8 @@ services:
         - net.ipv4.tcp_keepalive_intvl=200
         - net.ipv4.tcp_keepalive_probes=5
     command: >
-      bash -c "pip install -U --no-cache-dir -e .
-      && pip install -U --no-cache-dir -r requirements.txt
+      bash -c "sudo -E pip install -U --no-cache-dir -e .
+      && sudo -E pip install -U --no-cache-dir -r requirements.txt
       && jupyter notebook"
 
 volumes:

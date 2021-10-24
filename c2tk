@@ -40,8 +40,8 @@ cmd_str="${@:1}"
 
 case $1 in
     "up")
-        #${cmd_prefix} up -d --remove-orphans
-        ${cmd_prefix} up
+        ${cmd_prefix} up -d --remove-orphans
+        #${cmd_prefix} up
         ;;
     "down")
         ${cmd_prefix} down --remove-orphans
