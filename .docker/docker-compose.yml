@@ -27,8 +27,9 @@ services:
     volumes:
       - ${C2TK_PATH}:/home/${DOCKER_USER}/c2tk
     environment:
-      - C2TK_PATH=/home/${DOCKER_USER}/c2tk
+      - NPROC=${NPROC}
       - OMP_NUM_THREADS=${NPROC}
+      - C2TK_PATH=/home/${DOCKER_USER}/c2tk
     shm_size: '1gb'
     ports:
       - 8989:8989
