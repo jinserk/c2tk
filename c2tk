@@ -2,6 +2,9 @@
 export C2TK_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 export DOCKER_PATH="${C2TK_PATH}/.docker"
 export NPROC="$( nproc )"
+export USRID="$( id -u )"
+export GRPID="$( id -g )"
+export DOCKER_USER="mpiuser"
 
 if command -v docker-compose &> /dev/null; then
     DOCKER_COMPOSE_CMD="docker-compose"     # v1
@@ -37,8 +40,8 @@ cmd_str="${@:1}"
 
 case $1 in
     "up")
-        ${cmd_prefix} up -d --remove-orphans
-        #${cmd_prefix} up
+        #${cmd_prefix} up -d --remove-orphans
+        ${cmd_prefix} up
         ;;
     "down")
         ${cmd_prefix} down --remove-orphans
@@ -49,6 +52,7 @@ case $1 in
     "bash")
         ${cmd_prefix} up -d --remove-orphans
         ${cmd_prefix} exec c2tk /bin/bash -l
+        #${cmd_prefix} run c2tk /bin/bash -l
         ;;
     "help")
         fn_help

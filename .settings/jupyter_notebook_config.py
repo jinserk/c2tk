@@ -1,5 +1,7 @@
 # Configuration file for jupyter-notebook.
 
+from pathlib import Path
+
 #------------------------------------------------------------------------------
 # Application(SingletonConfigurable) configuration
 #------------------------------------------------------------------------------
@@ -389,7 +391,10 @@ c.NotebookApp.ip = '0.0.0.0'
 ## The directory to use for notebooks and kernels.
 #  Default: ''
 # c.NotebookApp.notebook_dir = ''
-c.NotebookApp.notebook_dir = '/c2tk/examples'
+if Path("~/c2tk/examples").exists:
+    c.NotebookApp.notebook_dir = str(Path("~/c2tk/examples").expanduser())
+else:
+    c.NotebookApp.notebook_dir = str(Path.home())
 
 ## Whether to open in a browser after starting. The specific browser used is
 #  platform dependent and determined by the python standard library `webbrowser`
