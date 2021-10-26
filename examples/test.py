@@ -100,7 +100,6 @@ def test_orca(atoms: Atoms) -> None:
 def main(smiles: str) -> None:
     atoms = get_atoms(smiles)
 
-<<<<<<< HEAD
     a1 = atoms.copy()
     a1.center(vacuum=50.0)
 
@@ -118,10 +117,6 @@ def main(smiles: str) -> None:
     print(f'test molecule energy: {e2:5.2f} eV')
     """
 
-=======
-    atoms.center(vacuum=5.0)
-    atoms = pre_optimize(atoms)
->>>>>>> cafee3e (Install by root, use by user)
     test_orca(atoms)
     #test_gpaw(atoms)
     #test_nwchem(atoms)

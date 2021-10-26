@@ -40,8 +40,8 @@ cmd_str="${@:1}"
 
 case $1 in
     "up")
-        ${cmd_prefix} up -d --remove-orphans
-        #${cmd_prefix} up
+        #${cmd_prefix} up -d --remove-orphans
+        ${cmd_prefix} up
         ;;
     "down")
         ${cmd_prefix} down --remove-orphans
@@ -50,8 +50,9 @@ case $1 in
         ${cmd_prefix} build --progress plain c2tk
         ;;
     "bash")
-        #${cmd_prefix} up -d --remove-orphans
-        ${cmd_prefix} run c2tk /bin/bash -l
+        ${cmd_prefix} up -d --remove-orphans
+        ${cmd_prefix} exec c2tk /bin/bash -l
+        #${cmd_prefix} run c2tk /bin/bash -l
         ;;
     "help")
         fn_help
