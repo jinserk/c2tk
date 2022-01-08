@@ -2,9 +2,10 @@
 export C2TK_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 export DOCKER_PATH="${C2TK_PATH}/.docker"
 export NPROC="$( nproc )"
-export USRID="$( id -u )"
-export GRPID="$( id -g )"
+export USERID="$( id -u )"
+export GROUPID="$( id -g )"
 export DOCKER_USER="mpiuser"
+export JUPYTER_PORT=8899
 
 if command -v docker-compose &> /dev/null; then
     DOCKER_COMPOSE_CMD="docker-compose"     # v1

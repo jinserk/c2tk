@@ -17,22 +17,32 @@ services:
   c2tk:
     build:
       context: ${C2TK_PATH}
-      dockerfile: ${C2TK_PATH}/.docker/Dockerfile
+      dockerfile: .docker/Dockerfile
       args:
         - NPROC=${NPROC}
-        - USRNAME=${DOCKER_USER}
-        - USRID=${USRID}
-        - GRPID=${GRPID}
-    user: ${USRID}:${GRPID}
+        - USERNAME=${DOCKER_USER}
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+    #deploy:
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - driver: nvidia
+    #          device_ids: ['0', '1']
+    #          capabilities: [gpu]
+    #ipc: host
+    shm_size: 2048M
     volumes:
       - ${C2TK_PATH}:/home/${DOCKER_USER}/c2tk
     environment:
       - NPROC=${NPROC}
       - OMP_NUM_THREADS=${NPROC}
       - C2TK_PATH=/home/${DOCKER_USER}/c2tk
-    shm_size: '1gb'
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+      - JUPYTER_PORT=${JUPYTER_PORT}
     ports:
-      - 8989:8989
+      - ${JUPYTER_PORT}:${JUPYTER_PORT}
     working_dir: /home/${DOCKER_USER}/c2tk
     stdin_open: true
     tty: true
@@ -44,10 +54,11 @@ services:
         - net.ipv4.tcp_keepalive_time=200
         - net.ipv4.tcp_keepalive_intvl=200
         - net.ipv4.tcp_keepalive_probes=5
+    user: ${USERID}:${GROUPID}
     command: >
-      bash -c "sudo -E pip install -U --no-cache-dir -e .
-      && sudo -E pip install -U --no-cache-dir -r requirements.txt
-      && jupyter notebook"
+      bash -c "pip install -U -e .
+      && pip install -U -r requirements.txt
+      && jupyter lab"
 
 volumes:
   localdb:

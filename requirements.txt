@@ -1,5 +1,6 @@
-pip
-setuptools
-pyyaml
-wheel
-pytest
+ase
+gpaw
+matscipy
+plams
+pyamg
+rdkit-pypi

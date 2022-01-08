@@ -127,7 +127,6 @@ c.NotebookApp.allow_remote_access = True
 ## Whether to allow the user to run the notebook as root.
 #  Default: False
 # c.NotebookApp.allow_root = False
-c.NotebookApp.allow_root = True
 
 ## Answer yes to any prompts.
 #  See also: JupyterApp.answer_yes
@@ -308,6 +307,7 @@ c.NotebookApp.ip = '0.0.0.0'
 ## The kernel manager class to use.
 #  Default: 'notebook.services.kernels.kernelmanager.MappingKernelManager'
 # c.NotebookApp.kernel_manager_class = 'notebook.services.kernels.kernelmanager.MappingKernelManager'
+c.NotebookApp.kernel_manager_class = 'notebook.services.kernels.kernelmanager.AsyncMappingKernelManager'
 
 ## The kernel spec manager class to use. Should be a subclass of
 #  `jupyter_client.kernelspec.KernelSpecManager`.
@@ -786,8 +786,8 @@ c.NotebookApp.port = 8989
 # c.Session.unpacker = 'json'
 
 ## Username for the Session. Default is your system username.
-#  Default: 'jinserk'
-# c.Session.username = 'jinserk'
+#  Default: 'username'
+# c.Session.username = 'username'
 
 #------------------------------------------------------------------------------
 # MultiKernelManager(LoggingConfigurable) configuration

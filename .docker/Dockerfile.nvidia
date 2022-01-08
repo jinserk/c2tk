@@ -1,0 +1,23 @@
+FROM nvidia/cuda:11.4.2-runtime-ubuntu20.04 AS baseimg
+MAINTAINER Jinserk Baik <jinserk.baik@gmail.com>
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV PYTHONUNBUFFERED=1
+
+## install requisites
+RUN apt-get update -y && apt-get -y install apt-utils && apt-get -y dist-upgrade
+RUN apt-get install -y --no-install-recommends \
+    sudo curl ca-certificates make build-essential git pip \
+    gfortran llvm openmpi \
+    openblas-dev libopenblas-openmp-dev \
+    libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+    libncurses5-dev libncursesw5-dev \
+    libffi-dev liblzma-dev python3-openssl \
+    python3-dev libcurl4-openssl-dev \
+    openbabel libopenbabel-dev python3-openbabel \
+    && apt-get -y autoclean \
+    && apt-get -y autoremove --purge \
+    && rm -rf /var/lib/apt/lists/*
+    
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
+
