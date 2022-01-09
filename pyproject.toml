@@ -1,11 +1,9 @@
 [build-system]
 requires = [
-    "setuptools>=42",
+    "setuptools>=56",
     "wheel",
 ]
 #build-backend = "setuptools.build_meta"
 
-[tool.pip]
-extra_options = [
-    "--no-use-pep517",
-]
+#[tool.pip]
+#use-pep517 = false

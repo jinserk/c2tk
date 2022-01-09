@@ -48,7 +48,7 @@ case $1 in
         ${cmd_prefix} down --remove-orphans
         ;;
     "build")
-        ${cmd_prefix} build --progress plain c2tk
+        ${cmd_prefix} build --pull --progress plain c2tk
         ;;
     "bash")
         ${cmd_prefix} up -d --remove-orphans

@@ -3,7 +3,7 @@ MAINTAINER Jinserk Baik <jinserk.baik@gmail.com>
 
 RUN pacman-key --init
 RUN pacman -Syyu --needed --noconfirm \
-    && pacman -Syu --needed --noconfirm base-devel git go python-pip gcc-fortran \
+    && pacman -Syu --needed --noconfirm base-devel git go gcc-fortran \
     && pacman -Scc --noconfirm
 
 # create user and group
@@ -17,12 +17,7 @@ RUN [ $(getent group ${GROUPID}) ] || groupadd -g ${GROUPID} ${USRNAME} \
   && echo "${USERNAME} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME}
   
 USER ${USERNAME}
-
-ENV PYTHONUNBUFFERED=1
 ENV HOME=/home/${USERNAME}
-ENV PATH=${HOME}/.local/bin:${PATH}
-ENV PYTHONPATH=${HOME}/.local/lib/python3.10/site-packages:/usr/lib/python3/dist-packages:${PYTHONPATH}
-ENV OMP_NUM_THREADS=${NPROC}
 WORKDIR ${HOME}
 
 RUN git clone https://aur.archlinux.org/yay.git \
@@ -33,9 +28,14 @@ RUN git clone https://aur.archlinux.org/yay.git \
     && yay -Scc --noconfirm
 
 RUN yay -Syu --needed --noconfirm \
-    openmpi openmp openblas fftw elpa libvdwxc libxc \
+    python-pip openmpi openmp openblas fftw elpa libvdwxc libxc \
     && yay -Scc --noconfirm
     
+ENV PYTHONUNBUFFERED=1
+ENV PATH=${HOME}/.local/bin:${PATH}
+#ENV PYTHONPATH=${HOME}/.local/lib/python3.10/site-packages:/usr/lib/python3/dist-packages:${PYTHONPATH}
+ENV OMP_NUM_THREADS=${NPROC}
+
 RUN mkdir -p ${HOME}/.pip
 COPY .settings/pip.conf ${HOME}/.pip/
 
