@@ -1,20 +1,4 @@
 import setuptools
-
-setuptools.setup(
-    install_requires=[
-        'ase',
-        'gpaw',
-        'loguru',
-        'matplotlib',
-        'networkx',
-        'numpy',
-        'python-dotenv',
-        'rdkit-pypi',
-        'scipy',
-    ],
-)
-
-import setuptools
 import distutils.text_file as txt
 from pathlib import Path
 from typing import List
