@@ -12,7 +12,7 @@ ARG USERID=1000
 ARG GROUPID=1000
 ARG NPROC=1
 
-RUN [ $(getent group ${GROUPID}) ] || groupadd -g ${GROUPID} ${USRNAME} \
+RUN groupadd -f -g ${GROUPID} ${USERNAME} \
   && useradd -u ${USERID} -g ${GROUPID} -G wheel -m -s /bin/bash ${USERNAME} \
   && echo "${USERNAME} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME}
   
