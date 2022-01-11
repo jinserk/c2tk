@@ -56,7 +56,7 @@ services:
         - net.ipv4.tcp_keepalive_probes=5
     user: ${USERID}:${GROUPID}
     command: >
-      bash -c "pip install -U --no-deps -e .
+      bash -c "pip install -U --no-deps --no-use-pep517 -e .
       && jupyter lab"
 
 volumes:

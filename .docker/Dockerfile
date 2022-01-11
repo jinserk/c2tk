@@ -37,26 +37,26 @@ ENV PATH=${HOME}/.local/bin:${PATH}
 ENV OMP_NUM_THREADS=${NPROC}
 
 RUN mkdir -p ${HOME}/.pip
-COPY .settings/pip.conf ${HOME}/.pip/
+COPY --chown=${USERID}:${GROUPID} .settings/pip.conf ${HOME}/.pip/
 
 RUN pip install -U pip setuptools wheel pyyaml pytest
 RUN pip install -U pybind11 ipython python-dotenv loguru
-RUN pip install -U numpy scipy mpi4py jupyter matplotlib networkx
+RUN pip install -U numpy scipy mpi4py jupyterlab matplotlib networkx
     
 RUN mkdir -p ${HOME}/.gpaw
-COPY .settings/gpaw-siteconfig.py ${HOME}/.gpaw/siteconfig.py
-COPY ./requirements.txt /tmp/requirements.txt
+COPY --chown=${USERID}:${GROUPID} .settings/gpaw-siteconfig.py ${HOME}/.gpaw/siteconfig.py
+COPY --chown=${USERID}:${GROUPID} ./requirements.txt /tmp/requirements.txt
 RUN pip install -U -r /tmp/requirements.txt
 
 RUN mkdir -p ${HOME}/.openmpi
-COPY .settings/mca-params.conf ${HOME}/.openmpi/mca-params.conf
+COPY --chown=${USERID}:${GROUPID} .settings/mca-params.conf ${HOME}/.openmpi/mca-params.conf
 #RUN gpaw install-data --register ${HOME}/.gpaw \
 #    && jupyter-nbextension enable nglview --py --user
     
 RUN mkdir -p ${HOME}/.ipython/profile_default
-COPY .settings/ipython_config.py ${HOME}/.ipython/profile_default/
+COPY --chown=${USERID}:${GROUPID} .settings/ipython_config.py ${HOME}/.ipython/profile_default/
 
 RUN mkdir -p ${HOME}/.jupyter/lab/user-settings
 #COPY .settings/jupyter_notebook_config.py ${HOME}/.jupyter/
-COPY .settings/jupyter_server_config.py ${HOME}/.jupyter/
+COPY --chown=${USERID}:${GROUPID} .settings/jupyter_server_config.py ${HOME}/.jupyter/
 

@@ -428,8 +428,8 @@ c.ServerApp.password = 'argon2:$argon2id$v=19$m=10240,t=10,p=8$HMpPxA30dlRY3twMN
 ## The directory to use for notebooks and kernels.
 #  Default: ''
 # c.ServerApp.root_dir = ''
-if Path("~/kai/examples").exists:
-    c.ServerApp.root_dir = str(Path("~/kai/examples").expanduser())
+if Path("~/c2tk/examples").exists:
+    c.ServerApp.root_dir = str(Path("~/c2tk/examples").expanduser())
 else:
     c.ServerApp.root_dir = str(Path.home())
 
