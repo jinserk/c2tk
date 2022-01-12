@@ -28,9 +28,9 @@ RUN git clone https://aur.archlinux.org/yay.git \
     && yay -Scc --noconfirm
 
 RUN yay -Syu --needed --noconfirm \
-    python-pip openmpi openmp openblas fftw elpa libvdwxc libxc \
+    python-pip openmpi openmp openblas-lapack fftw elpa libvdwxc libxc \
     && yay -Scc --noconfirm
-    
+
 ENV PYTHONUNBUFFERED=1
 ENV PATH=${HOME}/.local/bin:${PATH}
 #ENV PYTHONPATH=${HOME}/.local/lib/python3.10/site-packages:/usr/lib/python3/dist-packages:${PYTHONPATH}
