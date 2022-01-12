@@ -1,17 +1,12 @@
 #!/bin/bash
-export C2TK_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-export DOCKER_PATH="${C2TK_PATH}/.docker"
-export NPROC="$( nproc )"
-export USERID="$( id -u )"
-export GROUPID="$( id -g )"
-export DOCKER_USER="mpiuser"
-export JUPYTER_PORT=8899
-
-if command -v docker-compose &> /dev/null; then
-    DOCKER_COMPOSE_CMD="docker-compose"     # v1
-else
-    DOCKER_COMPOSE_CMD="docker compose"     # v2
-fi
+get_logical_ncpu()
+{
+    if [[ "$OSTYPE" == "darwin" ]]; then
+        sysctl -n hw.ncpu
+    else
+        nproc
+    fi
+}
 
 fn_help()
 {
@@ -33,6 +28,20 @@ fn_help()
     echo "    ./c2tk python main.py"
     echo
 }
+
+export C2TK_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+export DOCKER_PATH="${C2TK_PATH}/.docker"
+export NPROC="$( get_logical_ncpu )"
+export USERID="$( id -u )"
+export GROUPID="$( id -g )"
+export DOCKER_USER="mpiuser"
+export JUPYTER_PORT=8899
+
+if command -v docker-compose &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker-compose"     # v1
+else
+    DOCKER_COMPOSE_CMD="docker compose"     # v2
+fi
 
 [[ $# -lt 1 ]] && fn_help && exit 1
 
