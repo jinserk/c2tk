@@ -1,11 +1,14 @@
 #!/bin/bash
 get_logical_ncpu()
 {
-    if [[ "$OSTYPE" == "darwin" ]]; then
+    case $(uname | tr '[:upper:]' '[:lower:]') in
+      darwin*)
         sysctl -n hw.ncpu
-    else
+        ;;
+      *)
         nproc
-    fi
+        ;;
+    esac
 }
 
 fn_help()
