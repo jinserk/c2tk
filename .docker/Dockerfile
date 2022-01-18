@@ -19,6 +19,7 @@ ARG USERNAME=mpiuser
 ARG USERID=1000
 ARG GROUPID=1000
 ARG VDWXC_VER=0.4.0
+ARG ORCA_PATH=/opt/orca502
 
 RUN groupadd -f -g ${GROUPID} ${USERNAME} \
   && useradd -u ${USERID} -g ${GROUPID} -G sudo -m -s /bin/bash ${USERNAME} \
@@ -37,13 +38,13 @@ RUN wget https://launchpad.net/libvdwxc/stable/${VDWXC_VER}/+download/libvdwxc-$
     && cd .. \
     && rm -rf libvdwxc-${VDWXC_VER}*
 
-ENV PATH=${HOME}/.local/bin:${PATH}
+ENV PATH=${HOME}/.local/bin:${ORCA_PATH}:${PATH}
 ENV PYTHONUNBUFFERED=1
 ENV OMP_NUM_THREADS=${NPROC}
 #ENV OMPI_ALLOW_RUN_AS_ROOT=1
 #ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 #ENV C_INCLUDE_PATH=${C_INCLUDE_PATH}:/usr/local/include/elpa-${ELPA_VER}
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib:${ORCA_PATH}
 ENV PYTHONPATH=${PYTHONPATH}:/usr/lib/x86_64-linux-gnu
 
 RUN mkdir -p ${HOME}/.pip
@@ -68,9 +69,6 @@ RUN mkdir -p ${HOME}/.jupyter/lab/user-settings
 #COPY .settings/jupyter_notebook_config.py ${HOME}/.jupyter/
 COPY --chown=${USERID}:${GROUPID} .settings/jupyter_server_config.py ${HOME}/.jupyter/
 
-ENV ORCA_PATH=/opt/orca502
-ENV PATH="${ORCA_PATH}:${PATH}"
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ORCA_PATH}
 ADD --chown=root:root ./.downloads/orca_5_0_2_linux_x86-64_shared_openmpi411.tar.xz /opt
 RUN sudo mv /opt/orca_5_0_2_linux_x86-64_shared_openmpi411 ${ORCA_PATH}
 
