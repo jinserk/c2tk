@@ -2,34 +2,27 @@
 
 [![DOI](https://zenodo.org/badge/414423138.svg)](https://zenodo.org/badge/latestdoi/414423138)
 
-`c2tk` is a dockerized environment to run `nwchem`, `gpaw` and `orca` with `ase`:
-- base OS image: `registry.fedoraproject.org/fedora-minimal:latest`
-- `python 3.9.7`
-- latest packages from fedora:
-  - `environment-modules`, `openmpi`, `python3-devel`
-  - `openblas-devel`, `openblas-openmp`, `openblas-threads`
-  - `libxc-devel`, `fftw-devel`, `fftw-openmpi-devel`, `libomp-devel`
-  - `elpa-openmpi-devel`, `blacs-openmpi-devel`, `hdf5-openmpi-devel`
-  - `nwchem`, `nwchem-openmpi`
+`c2tk` is a dockerized environment to run `psi4` with `qcengine`, `gpaw` and `orca` with `ase`:
+- `python 3.9`
 - source build:`libvdwxc-0.4.0`
 - latest packages from pypi:
   - `python-dotenv`, `loguru`
   - `ase`, `gpaw`, `rdkit-pypi`
   - `networkx`, `matplotlib`, `nglview`
-- install support for `orca-5.0.1` (if you download the binary from the [official site](https://orcaforum.kofo.mpg.de/app.php/dlext/))
+- install support for `orca-5.0.2` (if you download the binary from the [official site](https://orcaforum.kofo.mpg.de/app.php/dlext/))
 
 ## INSTALLATION
 
 1. clone repo
 
-2. download orca 5.0.1\
+2. download orca 5.0.2\
 **ORCA is free only for academic use**\
 register [here](https://orcaforum.kofo.mpg.de/index.php) and go downloads.\
-click `ORCA 5.0.1` post and choose `ORCA 5.0.1, Linux, x86-64, shared-version, .tar.xz Archive`.
+click `ORCA 5.0.2` post and choose `ORCA 5.0.2, Linux, x86-64, shared-version, .tar.xz Archive`.
 ```
 cd c2tk
 mkdir .downloads
-cp <your-download-path>/orca_5_0_1_linux_x86-64_shared_openmpi411.tar.xz .downloads
+cp <your-download-path>/orca_5_0_2_linux_x86-64_shared_openmpi411.tar.xz .downloads
 ```
 
 3. build image
