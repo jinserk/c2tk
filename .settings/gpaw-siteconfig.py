@@ -3,9 +3,24 @@ fftw = True
 elpa = True
 libvdwxc = True
 
-libraries = ['openblas', 'xc', 'fftw3', 'scalapack', 'vdwxc', 'elpa_openmp']
-include_dirs = ['/usr/include', '/usr/local/include', '/usr/include/elpa_openmp-2021.05.002']
-#library_dirs = ['/usr/lib', '/usr/local/lib']
+libraries = ['openblas', 'xc']
+include_dirs = ['/usr/include', '/usr/local/include']
+#library_dirs = ['/lib', '/lib/x86_64-linux-gnu', '/usr/lib', '/usr/lib/x86_64-linux-gnu', '/usr/local/lib']
+
+if scalapack:
+    libraries.append('scalapack-openmpi')
+
+if fftw:
+    libraries.append('fftw3')
+
+if libvdwxc:
+    libraries.append('vdwxc')
+
+if elpa:
+    import glob
+    libraries.append('elpa_openmp')
+    incs = glob.glob('/usr/local/include/elpa*')
+    include_dirs.extend(incs)
 
 extra_compile_args += ['-fopenmp']
 extra_link_args += ['-fopenmp']

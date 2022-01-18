@@ -1,0 +1,77 @@
+FROM archlinux/archlinux:base-devel
+MAINTAINER Jinserk Baik <jinserk.baik@gmail.com>
+
+RUN pacman-key --init
+RUN pacman -Syyu --needed --noconfirm \
+    && pacman -Syu --needed --noconfirm base-devel git go inetutils gcc-fortran python-pip \
+    && pacman -Scc --noconfirm
+
+# create user and group
+ARG USERNAME=mpiuser
+ARG USERID=1000
+ARG GROUPID=1000
+ARG NPROC=1
+
+RUN groupadd -f -g ${GROUPID} ${USERNAME} \
+  && useradd -u ${USERID} -g ${GROUPID} -G wheel -m -s /bin/bash ${USERNAME} \
+  && echo "${USERNAME} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME}
+
+USER ${USERNAME}
+ENV HOME=/home/${USERNAME}
+WORKDIR ${HOME}
+
+RUN git clone https://aur.archlinux.org/yay.git \
+    && cd yay \
+    && makepkg -sri --needed --noconfirm \
+    && cd .. && rm -rf yay \
+    && yay -Syu --devel --save --needed --noconfirm \
+    && yay -Scc --noconfirm
+
+RUN git clone https://aur.archlinux.org/openblas-lapack-static.git
+RUN cd openblas-lapack-static \
+    && sed -i 's/USE_TLS=1/USE_TLS=1 INTERFACE64=1/g' PKGBUILD \
+    && makepkg -sri --neede --noconfirm \
+    && yay -Scc --noconfirm
+
+RUN yay -Syu --needed --noconfirm \
+    openmpi openmp fftw elpa libvdwxc libxc \
+    && yay -Scc --noconfirm
+
+RUN git clone https://aur.archlinux.org/gamess.git
+COPY --chown=${USERID}:${GROUPID} .downloads/gamess-current.tar.gz ${HOME}/gamess
+COPY --chown=${USERID}:${GROUPID} .downloads/comp.patch ${HOME}/gamess
+RUN cd gamess \
+    && sed -i 's/61283d56ad02513bc40a729ed26566a11e8c298e560d7c4a37254ff725b7ab30/36a07e3567eec3b804fca41022b45588645215ccf4557d5176fb69d473b9521c/g' PKGBUILD \
+    && sed -i 's/a003a611b658c9073954fb0041f077ec1a910310db73201c97829eb2654b8e43/c63d942bd9c9ef41cdf53c82603c528091a04da57eb783eb2de82121aa86a51e/g' PKGBUILD \
+    && makepkg -sri --neede --noconfirm \
+    && yay -Scc --noconfirm
+
+ENV PYTHONUNBUFFERED=1
+ENV PATH=${HOME}/.local/bin:${PATH}
+#ENV PYTHONPATH=${HOME}/.local/lib/python3.10/site-packages:/usr/lib/python3/dist-packages:${PYTHONPATH}
+ENV OMP_NUM_THREADS=${NPROC}
+
+RUN mkdir -p ${HOME}/.pip
+COPY --chown=${USERID}:${GROUPID} .settings/pip.conf ${HOME}/.pip/
+
+RUN pip install -U pip setuptools wheel pyyaml pytest
+RUN pip install -U pybind11 ipython python-dotenv loguru
+RUN pip install -U numpy scipy mpi4py jupyterlab matplotlib networkx
+    
+RUN mkdir -p ${HOME}/.gpaw
+COPY --chown=${USERID}:${GROUPID} .settings/gpaw-siteconfig.py ${HOME}/.gpaw/siteconfig.py
+COPY --chown=${USERID}:${GROUPID} ./requirements.txt /tmp/requirements.txt
+RUN pip install -U -r /tmp/requirements.txt
+
+RUN mkdir -p ${HOME}/.openmpi
+COPY --chown=${USERID}:${GROUPID} .settings/mca-params.conf ${HOME}/.openmpi/mca-params.conf
+#RUN gpaw install-data --register ${HOME}/.gpaw \
+#    && jupyter-nbextension enable nglview --py --user
+    
+RUN mkdir -p ${HOME}/.ipython/profile_default
+COPY --chown=${USERID}:${GROUPID} .settings/ipython_config.py ${HOME}/.ipython/profile_default/
+
+RUN mkdir -p ${HOME}/.jupyter/lab/user-settings
+#COPY .settings/jupyter_notebook_config.py ${HOME}/.jupyter/
+COPY --chown=${USERID}:${GROUPID} .settings/jupyter_server_config.py ${HOME}/.jupyter/
+

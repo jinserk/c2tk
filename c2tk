@@ -40,16 +40,9 @@ export GROUPID="$( id -g )"
 export DOCKER_USER="mpiuser"
 export JUPYTER_PORT=8899
 
-if command -v docker-compose &> /dev/null; then
-    DOCKER_COMPOSE_CMD="docker-compose"     # v1
-else
-    DOCKER_COMPOSE_CMD="docker compose"     # v2
-fi
-
 [[ $# -lt 1 ]] && fn_help && exit 1
 
-cmd_prefix="${DOCKER_COMPOSE_CMD} -f ${DOCKER_PATH}/docker-compose.yml -p c2tk"
-cmd_str="${@:1}"
+cmd_prefix="docker compose -f ${DOCKER_PATH}/docker-compose.yml -p c2tk"
 
 case $1 in
     "up")
@@ -63,9 +56,12 @@ case $1 in
         ${cmd_prefix} build --pull --progress plain c2tk
         ;;
     "bash")
-        ${cmd_prefix} up -d --remove-orphans
+        #${cmd_prefix} up -d --remove-orphans
         ${cmd_prefix} exec c2tk /bin/bash -l
         #${cmd_prefix} run c2tk /bin/bash -l
+        ;;
+    "run")
+        ${cmd_prefix} run -u ${USERID} c2tk ${@:2}
         ;;
     "help")
         fn_help
@@ -78,6 +74,6 @@ case $1 in
         ;;
     *)
         ${cmd_prefix} up -d --remove-orphans
-        ${cmd_prefix} exec c2tk ${cmd_str}
+        ${cmd_prefix} exec c2tk ${@:1}
         ;;
 esac

@@ -1,6 +1,9 @@
 ase
 gpaw
 matscipy
+nglview
 plams
 pyamg
+qcelemental
+qcengine
 rdkit-pypi
