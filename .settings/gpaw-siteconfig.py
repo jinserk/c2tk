@@ -18,8 +18,8 @@ if libvdwxc:
 
 if elpa:
     import glob
-    libraries.append('elpa_openmp')
-    incs = glob.glob('/usr/local/include/elpa*')
+    libraries.append('elpa')
+    incs = glob.glob('/usr/include/elpa*')
     include_dirs.extend(incs)
 
 extra_compile_args += ['-fopenmp']

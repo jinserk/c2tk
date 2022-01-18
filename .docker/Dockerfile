@@ -1,14 +1,15 @@
-FROM python:3.9-slim AS back
+FROM debian:testing AS back
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y && apt-get -y install apt-utils && apt-get -y dist-upgrade
 RUN apt-get install -y --no-install-recommends \
-    wget sudo tcsh build-essential gawk libtool gcc gfortran \
+    wget sudo build-essential gawk libtool gcc gfortran \
     mpi-default-bin mpi-default-dev libscalapack-mpi-dev libomp-dev \
     libopenblas-dev libopenblas64-dev libopenblas-openmp-dev libopenblas64-openmp-dev \
-    libxc-dev libfftw3-dev libfftw3-mpi-dev libhdf5-dev \
-    openbabel psi4 psi4-data \
+    libxc-dev libfftw3-dev libfftw3-mpi-dev libhdf5-dev libelpa-dev \
+    python3-pip python3-mpi4py python3-pybind11 python3-dev cython3 \
+    openbabel gpaw gpaw-data psi4 psi4-data \
     && apt-get -y autoclean \
     && apt-get -y autoremove --purge \
     && rm -rf /var/lib/apt/lists/*
@@ -17,14 +18,12 @@ ARG NPROC=2
 ARG USERNAME=mpiuser
 ARG USERID=1000
 ARG GROUPID=1000
-
 ARG VDWXC_VER=0.4.0
-ARG ELPA_VER=2021.11.001
 
 RUN groupadd -f -g ${GROUPID} ${USERNAME} \
   && useradd -u ${USERID} -g ${GROUPID} -G sudo -m -s /bin/bash ${USERNAME} \
   && echo "${USERNAME} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME}
-  
+
 USER ${USERNAME}
 ENV HOME=/home/${USERNAME}
 WORKDIR ${HOME}
@@ -38,18 +37,6 @@ RUN wget https://launchpad.net/libvdwxc/stable/${VDWXC_VER}/+download/libvdwxc-$
     && cd .. \
     && rm -rf libvdwxc-${VDWXC_VER}*
 
-RUN wget https://elpa.mpcdf.mpg.de/software/tarball-archive/Releases/${ELPA_VER}/elpa-${ELPA_VER}.tar.gz \
-    && tar -xvf elpa-${ELPA_VER}.tar.gz \
-    && cd elpa-${ELPA_VER}/ \
-    && ./configure CC="mpicc" FC="mpif90" AWK="gawk" \
-        FCFLAGS="-O2 -mmmx -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -maes -mavx -mfma -mavx2" \
-        CFLAGS="-O2 -mmmx -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -maes -mavx -mfma -mavx2" \
-        --enable-openmp --with-mpi=yes --disable-avx512 --prefix=/usr/local \
-    && make -j \
-    && sudo make install \
-    && cd .. \
-    && rm -rf elpa-${ELPA_VER}*
-    
 ENV PATH=${HOME}/.local/bin:${PATH}
 ENV PYTHONUNBUFFERED=1
 ENV OMP_NUM_THREADS=${NPROC}
@@ -65,7 +52,7 @@ RUN mkdir -p ${HOME}/.openmpi
 COPY --chown=${USERID}:${GROUPID} .settings/mca-params.conf ${HOME}/.openmpi/mca-params.conf
 
 RUN pip install -U pip setuptools wheel pyyaml pytest
-RUN pip install -U pybind11 mpi4py cython ipython python-dotenv loguru
+RUN pip install -U ipython python-dotenv loguru
 RUN pip install -U numpy scipy h5py jupyterlab matplotlib networkx
  
 RUN mkdir -p ${HOME}/.gpaw
